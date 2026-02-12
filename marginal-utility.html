@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>边际效用递减 (完整无删减) - SmithHub</title>
+    <style>
+        body { background-color: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; }
+        a { text-decoration: none; color: inherit; }
+        
+        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+
+        .main-container { display: flex; max-width: 1400px; margin: 20px auto; gap: 20px; padding: 0 15px; }
+        .content-area { flex: 3; }
+        .sidebar { flex: 1; }
+
+        /* 伪装成播放器的阅读器 */
+        .text-player-wrapper {
+            background-color: #000;
+            border: 1px solid #333;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .text-screen {
+            height: 500px;
+            background-color: #111;
+            padding: 40px;
+            overflow-y: scroll;
+            color: #ccc;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 2;
+            font-size: 18px;
+            border-bottom: 3px solid #ff9900;
+        }
+
+        .text-screen h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ff9900;
+            font-size: 24px;
+        }
+
+        .text-screen h3 {
+            color: #ff9900;
+            margin: 30px 0 15px 0;
+            font-size: 18px;
+        }
+
+        .text-screen .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            color: #fff;
+            margin: 20px 0;
+            padding: 15px 20px;
+            background: #0a0a0a;
+            border-left: 3px solid #ff9900;
+        }
+
+        .problem {
+            margin: 25px 0;
+            padding: 20px;
+            background: #0d0d0d;
+            border: 1px solid #222;
+        }
+
+        .problem-header {
+            color: #ff9900;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .answer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111;
+            border: 1px dashed #333;
+        }
+
+        .answer-header {
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .sexy-comment {
+            color: #ff6b6b;
+            font-style: italic;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        /* 进度条 */
+        .progress-bar-container {
+            background: #333;
+            height: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .progress-bar {
+            background: #ff9900;
+            height: 100%;
+            width: 0%;
+        }
+
+        /* 控制栏 */
+        .player-controls {
+            padding: 10px 15px;
+            background: #1b1b1b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .control-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 20px; margin-right: 15px; }
+        .control-btn:hover { color: #ff9900; }
+
+        .video-title { font-size: 24px; margin: 15px 0 10px 0; color: #fff; }
+        .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
+        .action-btn:hover { background: #444; }
+        .btn-orange { color: #ff9900; }
+
+        .tags { margin: 15px 0; }
+        .tag { background:#222; padding:5px 10px; border-radius:10px; color:#888; font-size:12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
+
+        /* 评论区 */
+        .comment-section { margin-top: 30px; }
+        .comment { display: flex; gap: 15px; margin-bottom: 20px; }
+        .avatar { width: 40px; height: 40px; background: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; }
+        .comment-body h4 { margin: 0 0 5px 0; color: #ff9900; font-size: 14px; }
+        .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
+        .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
+
+        /* 侧边栏 */
+        .sidebar-item { display: flex; gap: 10px; cursor: pointer; margin-bottom: 15px; text-decoration: none; }
+        .sidebar-thumb { width: 160px; height: 90px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; font-size: 11px; text-align: center; flex-shrink: 0; }
+        .sidebar-info { flex: 1; }
+        .sidebar-title { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .sidebar-meta { font-size: 11px; color: #777; }
+        .sidebar-item:hover .sidebar-title { color: #ff9900; }
+
+        .ad-box { background:#222; padding:20px; text-align:center; border:1px dashed #444; color:#ff9900; margin-top: 15px; }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #555; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff9900; }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .sidebar { order: 2; }
+            .text-screen { height: 400px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Smith<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888;">Premium Academic Content</div>
+</header>
+
+<div class="main-container">
+    <div class="content-area">
+        
+        <div class="text-player-wrapper">
+            <div class="text-screen" id="scrollingText">
+                <h2>📚 INTERMEDIATE MICROECONOMICS EXAM 📚</h2>
+                <p class="subtitle">Utility Maximization Problem Set · Uncensored Full Version</p>
+                
+                <p class="sexy-comment">⚠️ Warning: The following content contains explicit mathematical expressions and may cause intellectual arousal.</p>
+
+                <div class="problem">
+                    <div class="problem-header">PROBLEM 1 · UTILITY MAXIMIZATION</div>
+                    <p>Solve utility maximization problem for consumers of various preferences:</p>
+                    
+                    <div class="math">u(x,y) = ln x + ln y</div>
+                    <div class="math">u(x,y) = xy</div>
+                    <div class="math">u(x,y) = −x² − y²</div>
+                    <div class="math">u(x,y) = −(x − x̄)² − (y − ȳ)², where x̄ > 0 and ȳ > 0</div>
+                </div>
+
+                <p class="sexy-comment">Oh yes... those utility functions are getting more complex...</p>
+
+                <div class="answer">
+                    <div class="answer-header">💦 SOLUTION (EXPLICIT)</div>
+                    
+                    <h3>i. Regular F.O.C. Condition</h3>
+                    <p>Use regular first-order condition to find solution:</p>
+                    <div class="math">x = m / 2pₓ &nbsp;&nbsp;and&nbsp;&nbsp; y = m / 2pᵧ</div>
+                    
+                    <h3>ii. Same Preference, Same Solution</h3>
+                    <p>It is the same preference (monotonic transformation), therefore the solution is the same:</p>
+                    <div class="math">x = m / 2pₓ &nbsp;&nbsp;and&nbsp;&nbsp; y = m / 2pᵧ</div>
+                    
+                    <h3>iii. Corner Solution 🔥</h3>
+                    <p>It has corner solution. If pₓ > pᵧ, then:</p>
+                    <div class="math">x = 0 &nbsp;&nbsp;and&nbsp;&nbsp; y = m / pᵧ</div>
+                    
+                    <p class="sexy-comment">That corner solution hits different... 🥵</p>
+                </div>
+
+                <div class="problem" style="margin-top: 40px;">
+                    <div class="problem-header">PROBLEM 2 · DIMINISHING MARGINAL UTILITY</div>
+                    <p>Prove that the following utility function exhibits diminishing marginal utility:</p>
+                    <div class="math">u(x) = √x</div>
+                    
+                    <p>Calculate MU and show that ∂MU/∂x < 0</p>
+                </div>
+
+                <div class="answer">
+                    <div class="answer-header">💦 SOLUTION</div>
+                    <div class="math">MU = ∂u/∂x = 1/(2√x)</div>
+                    <div class="math">∂MU/∂x = -1/(4x^(3/2)) < 0 ✓</div>
+                    <p>As x increases, marginal utility decreases.</p>
+                    <p class="sexy-comment">The more you have, the less each additional unit satisfies you... 
+                    <br>This is why your 5th relationship feels different from your 1st. 💔</p>
+                </div>
+
+                <div class="problem" style="margin-top: 40px;">
+                    <div class="problem-header">PROBLEM 3 · MULTI-PERSON OPTIMIZATION</div>
+                    <p>Consider n consumers with identical preferences u(x) = ln(x). Total resource is fixed at X̄. Find the Pareto optimal allocation.</p>
+                </div>
+
+                <div class="answer">
+                    <div class="answer-header">💦 SOLUTION</div>
+                    <div class="math">max Σᵢ ln(xᵢ) &nbsp;&nbsp;s.t.&nbsp;&nbsp; Σᵢ xᵢ = X̄</div>
+                    <div class="math">xᵢ* = X̄/n for all i</div>
+                    <p class="sexy-comment">Equal split... the optimal "multi-person" arrangement is when everyone gets the same amount. 
+                    <br>Adding more participants = less for everyone = diminishing returns. 
+                    <br>This is the mathematical proof for "多人运动的上限".</p>
+                </div>
+
+                <p style="text-align:center; margin-top:50px; color:#666;">
+                    [END OF EXAM]
+                    <br><br>
+                    <span style="color:#ff9900;">Upgrade to Premium to access the Lagrangian Multiplier Interpretation</span>
+                </p>
+
+            </div>
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="readingProgress"></div>
+            </div>
+
+            <div class="player-controls">
+                <div>
+                    <button class="control-btn" title="Play (Auto Scroll)">▶</button>
+                    <button class="control-btn" title="Volume (Inner Voice)">🔊</button>
+                    <span style="color:#888; font-size:12px;">Page 1 / ∞</span>
+                </div>
+                <div>
+                    <button class="control-btn" title="Full Screen">⛶</button>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="video-title">多人运动的上限：边际效用递减的残酷真相 (完整无删减)</h1>
+        
+        <div class="video-stats">
+            <span>300万次观看 · 期末考试周上传</span>
+            
+            <div class="action-buttons">
+                <button class="action-btn btn-orange">👍 帕累托改进 42K</button>
+                <button class="action-btn">👎 挂科</button>
+                <button class="action-btn">↪ 分享给室友</button>
+                <button class="action-btn">💾 存到错题本</button>
+            </div>
+        </div>
+
+        <div class="tags">
+            <span class="tag">#中级微观经济学</span>
+            <span class="tag">#效用最大化</span>
+            <span class="tag">#边际效用递减</span>
+            <span class="tag">#FOC</span>
+            <span class="tag">#角点解</span>
+            <span class="tag">#期末考试</span>
+            <span class="tag">#救命</span>
+        </div>
+
+        <div class="comment-section">
+            <h3 style="margin-bottom:20px;">评论 (2,048)</h3>
+            
+            <div class="comment">
+                <div class="avatar">S</div>
+                <div class="comment-body">
+                    <h4>Struggling_Student <span>期末周</span></h4>
+                    <p>我考试前一晚看的这个，第二天直接默写，过了</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">P</div>
+                <div class="comment-body">
+                    <h4>Professor_Wang <span>已认证教师</span></h4>
+                    <p>这是我出的题。谁把答案传上来的？？？</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">E</div>
+                <div class="comment-body">
+                    <h4>Econ_Major_2026 <span>3小时前</span></h4>
+                    <p>那个corner solution真的让我很有感觉...</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">M</div>
+                <div class="comment-body">
+                    <h4>Math_Lover <span>1小时前</span></h4>
+                    <p>说实话，看到漂亮的FOC比看到漂亮的人更让我兴奋</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">R</div>
+                <div class="comment-body">
+                    <h4>Retake_King <span>刚刚</span></h4>
+                    <p>补考还是这套题吗？急</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h4 style="margin-bottom:15px; color:#888;">相关推荐</h4>
+        
+        <a href="invisible-hand.html" class="sidebar-item">
+            <div class="sidebar-thumb">👋📈<br>EQUILIBRIUM</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">看不见的手让我最大化了</div>
+                <div class="sidebar-meta">Adam_Smith · 1776万观看</div>
+            </div>
+        </a>
+
+        <a href="free-rider.html" class="sidebar-item">
+            <div class="sidebar-thumb">🚴‍♂️💨<br>FREE</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">免费骑乘：他享受了但不付费</div>
+                <div class="sidebar-meta">Public_Goods · 1954万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">📐📊<br>LAGRANGE</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">拉格朗日乘数法：完整深入教程</div>
+                <div class="sidebar-meta">Constrained_Opt · 800万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">🔺💀<br>HESSIAN</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">Hessian矩阵：二阶条件详解</div>
+                <div class="sidebar-meta">SOC_Master · 500万观看</div>
+            </div>
+        </a>
+
+        <div class="ad-box">
+            <b>期末周了？</b><br>
+            <small>升级Premium获取全部历年真题</small><br>
+            <button style="background:#ff9900; border:none; padding:8px 15px; margin-top:10px; cursor:pointer; font-weight:bold;">📚 突击复习</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const textScreen = document.getElementById('scrollingText');
+    const progressBar = document.getElementById('readingProgress');
+
+    textScreen.addEventListener('scroll', () => {
+        const scrollTop = textScreen.scrollTop;
+        const scrollHeight = textScreen.scrollHeight - textScreen.clientHeight;
+        const scrolled = (scrollTop / scrollHeight) * 100;
+        progressBar.style.width = scrolled + "%";
+    });
+</script>
+
+</body>
+</html>

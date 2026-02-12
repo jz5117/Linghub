@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无能的丈夫：未被满足的委托人 - SmithHub</title>
+    <style>
+        body { background-color: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; }
+        a { text-decoration: none; color: inherit; }
+        
+        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+
+        .main-container { display: flex; max-width: 1400px; margin: 20px auto; gap: 20px; padding: 0 15px; }
+        .content-area { flex: 3; }
+        .sidebar { flex: 1; }
+
+        /* 伪装成播放器的阅读器 */
+        .text-player-wrapper {
+            background-color: #000;
+            border: 1px solid #333;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .text-screen {
+            height: 500px;
+            background-color: #111;
+            padding: 40px;
+            overflow-y: scroll;
+            color: #ccc;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 2;
+            font-size: 17px;
+            border-bottom: 3px solid #ff9900;
+        }
+
+        .text-screen h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ff9900;
+            font-size: 22px;
+        }
+
+        .text-screen h3 {
+            color: #ff9900;
+            margin: 30px 0 15px 0;
+            font-size: 18px;
+        }
+
+        .text-screen .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-size: 18px;
+            color: #fff;
+            margin: 20px 0;
+            padding: 15px 20px;
+            background: #0a0a0a;
+            border-left: 3px solid #ff9900;
+            overflow-x: auto;
+        }
+
+        .problem {
+            margin: 25px 0;
+            padding: 20px;
+            background: #0d0d0d;
+            border: 1px solid #222;
+        }
+
+        .problem-header {
+            color: #ff9900;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .answer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111;
+            border: 1px dashed #333;
+        }
+
+        .answer-header {
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .sexy-comment {
+            color: #ff6b6b;
+            font-style: italic;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+
+        .handwriting {
+            font-family: 'Comic Sans MS', 'Segoe Script', cursive;
+            background: #1a1a0a;
+            padding: 20px;
+            border: 1px solid #333;
+            margin: 20px 0;
+            color: #ddd;
+            line-height: 2.2;
+        }
+
+        .handwriting .title {
+            color: #ff9900;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* 进度条 */
+        .progress-bar-container {
+            background: #333;
+            height: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .progress-bar {
+            background: #ff9900;
+            height: 100%;
+            width: 0%;
+        }
+
+        /* 控制栏 */
+        .player-controls {
+            padding: 10px 15px;
+            background: #1b1b1b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .control-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 20px; margin-right: 15px; }
+        .control-btn:hover { color: #ff9900; }
+
+        .video-title { font-size: 24px; margin: 15px 0 10px 0; color: #fff; }
+        .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
+        .action-btn:hover { background: #444; }
+        .btn-orange { color: #ff9900; }
+
+        .tags { margin: 15px 0; }
+        .tag { background:#222; padding:5px 10px; border-radius:10px; color:#888; font-size:12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
+
+        /* 评论区 */
+        .comment-section { margin-top: 30px; }
+        .comment { display: flex; gap: 15px; margin-bottom: 20px; }
+        .avatar { width: 40px; height: 40px; background: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; }
+        .comment-body h4 { margin: 0 0 5px 0; color: #ff9900; font-size: 14px; }
+        .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
+        .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
+
+        /* 侧边栏 */
+        .sidebar-item { display: flex; gap: 10px; cursor: pointer; margin-bottom: 15px; text-decoration: none; }
+        .sidebar-thumb { width: 160px; height: 90px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; font-size: 11px; text-align: center; flex-shrink: 0; }
+        .sidebar-info { flex: 1; }
+        .sidebar-title { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .sidebar-meta { font-size: 11px; color: #777; }
+        .sidebar-item:hover .sidebar-title { color: #ff9900; }
+
+        .ad-box { background:#222; padding:20px; text-align:center; border:1px dashed #444; color:#ff9900; margin-top: 15px; }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #555; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff9900; }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .sidebar { order: 2; }
+            .text-screen { height: 400px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Smith<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888;">Premium Academic Content</div>
+</header>
+
+<div class="main-container">
+    <div class="content-area">
+        
+        <div class="text-player-wrapper">
+            <div class="text-screen" id="scrollingText">
+                <h2>🍋 ASYMMETRIC INFORMATION: THE LEMON PROBLEM 🍋</h2>
+                <p class="subtitle">Adverse Selection & Signaling · Intermediate Microeconomics Final Exam</p>
+                
+                <p class="sexy-comment">⚠️ Warning: This content contains explicit principal-agent relationships and unsatisfied parties.</p>
+
+                <div class="problem">
+                    <div class="problem-header">📋 PROBLEM SETUP: THE MARRIAGE... I MEAN LABOR MARKET</div>
+                    <p>A firm recruits new employees and <strong>two workers of different abilities</strong> apply. The firm is unable to tell them apart while knowing they are different.</p>
+                    
+                    <p class="sexy-comment">Classic. You never know what you're getting until it's too late... 💔</p>
+
+                    <p>Suppose two workers have different reservation wages:</p>
+                    <div class="math">w̲<sub>H</sub> and w̲<sub>L</sub>, where w̲<sub>H</sub> > w̲<sub>L</sub></div>
+                    
+                    <p>Values workers create for the firm:</p>
+                    <div class="math">v<sub>H</sub> and v<sub>L</sub>, where v<sub>H</sub> > v<sub>L</sub>, v<sub>H</sub> > w̲<sub>H</sub>, and v<sub>L</sub> > w̲<sub>L</sub></div>
+
+                    <p>In the labor market there are abundant workers with:</p>
+                    <div class="math">q = fraction of high ability<br>(1-q) = fraction of low ability (the lemons 🍋)</div>
+                </div>
+
+                <div class="problem">
+                    <div class="problem-header">❓ QUESTION 1: WHO SHOWS UP?</div>
+                    <p>When the firm recruits new staff, what is the equilibrium probability, denoted as <strong>P<sub>H</sub></strong>, that high ability worker applies?</p>
+                    <p>Defend your answer using the theory of information asymmetries and clarify whether the equilibrium is efficient.</p>
+                </div>
+
+                <div class="answer">
+                    <div class="answer-header">💦 SOLUTION: THE TRAGIC TRUTH</div>
+                    
+                    <p>In the beginning, the firm would like to pay any worker based on expected value.</p>
+                    
+                    <p>But here's what happens:</p>
+                    
+                    <div class="math">
+                        1. Firm offers pooling wage w = E[v] = qv<sub>H</sub> + (1-q)v<sub>L</sub><br><br>
+                        2. If w < w̲<sub>H</sub>, high ability workers won't apply<br><br>
+                        3. Only low ability (lemons 🍋) remain<br><br>
+                        4. Firm learns this, lowers wage to w = w̲<sub>L</sub><br><br>
+                        5. Result: <strong>P<sub>H</sub> = 0</strong>
+                    </div>
+
+                    <p class="sexy-comment">Adverse selection occurs. Only the lemons show up. The good ones have better options... 
+                    <br><br>
+                    This is also why your ex's new partner is worse than you. The high-quality people already left the market. 😏</p>
+                    
+                    <h3>Is this efficient?</h3>
+                    <p><strong>NO.</strong> There are gains from trade that are unrealized. The high-ability worker would create value v<sub>H</sub> > w̲<sub>H</sub>, but the transaction never happens.</p>
+                    
+                    <p class="sexy-comment">Unrealized gains from trade... sounds like every relationship that "could have been something" but wasn't. 💔</p>
+                </div>
+
+                <div class="problem" style="margin-top: 40px;">
+                    <div class="problem-header">❓ QUESTION 2 (CHALLENGING): THE SIGNALING SOLUTION</div>
+                    <p>Suppose the firm runs a <strong>screening procedure</strong> to ask applicants to signal via providing a diploma of education.</p>
+                    
+                    <p>Let education costs be:</p>
+                    <div class="math">c<sub>H</sub>(e) and c<sub>L</sub>(e), where c<sub>H</sub> < c<sub>L</sub></div>
+                    <p>(High ability finds it easier to get educated)</p>
+                    
+                    <p>Find the value of <strong>e*</strong> that separates the two types.</p>
+                </div>
+
+                <div class="answer">
+                    <div class="answer-header">💦 SOLUTION: THE EXPENSIVE SIGNAL</div>
+                    
+                    <h3>Separating Equilibrium Conditions:</h3>
+                    
+                    <p>For high-ability to signal:</p>
+                    <div class="math">w<sub>H</sub> - c<sub>H</sub>(e*) ≥ w<sub>L</sub><br>
+                    (Getting diploma is worth it for high-ability)</div>
+
+                    <p>For low-ability NOT to signal:</p>
+                    <div class="math">w<sub>L</sub> ≥ w<sub>H</sub> - c<sub>L</sub>(e*)<br>
+                    (Getting diploma is NOT worth it for low-ability)</div>
+
+                    <p>Combining these:</p>
+                    <div class="math">
+                        (w<sub>H</sub> - w<sub>L</sub>) / c<sub>L</sub> ≤ e* ≤ (w<sub>H</sub> - w<sub>L</sub>) / c<sub>H</sub>
+                    </div>
+
+                    <p class="sexy-comment">
+                        Translation: The signal must be expensive enough that fakers won't bother, but cheap enough that real ones will do it.
+                        <br><br>
+                        This is why he bought you an expensive ring. Not because he loves you, but because a broke man couldn't afford to fake it. 💎
+                        <br><br>
+                        Spence (1973) won a Nobel Prize for explaining why your boyfriend is showing off. You're welcome.
+                    </p>
+                </div>
+
+                <div class="handwriting">
+                    <div class="title">📝 My Handwritten Notes (3AM before exam):</div>
+                    x; c(x); y=f(x), s(y).<br>
+                    参与约束: s(y) - c(x) ≥ ū<br>
+                    对雇主: max f(x) - s(f(x)), s.t. s(y) - c(x) ≥ ū<br>
+                    均衡为 MP<sub>x*</sub> = MC(x*)<br>
+                    即：找到一个s(y), 使 s(f(x̂)) - c(x*) ≥ s(f(x)) - c(x), ∀x<br><br>
+                    1. 租金: c(x) = 定, s(f(x)) = f(x) - R<br>
+                    2. 雇佣劳动: s(x) = wx + k
+                </div>
+
+                <p style="text-align:center; margin-top:50px; color:#666;">
+                    [END OF EXAM]
+                    <br><br>
+                    <span style="color:#ff9900;">Upgrade to Premium to unlock: "How to Signal in the Dating Market: A Game-Theoretic Approach"</span>
+                </p>
+
+            </div>
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="readingProgress"></div>
+            </div>
+
+            <div class="player-controls">
+                <div>
+                    <button class="control-btn" title="Play (Auto Scroll)">▶</button>
+                    <button class="control-btn" title="Volume (Inner Voice)">🔊</button>
+                    <span style="color:#888; font-size:12px;">Akerlof (1970) / Spence (1973)</span>
+                </div>
+                <div>
+                    <button class="control-btn" title="Full Screen">⛶</button>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="video-title">无能的丈夫：未被满足的委托人 (Asymmetric Information)</h1>
+        
+        <div class="video-stats">
+            <span>197万次观看 · 诺贝尔奖年上传</span>
+            
+            <div class="action-buttons">
+                <button class="action-btn btn-orange">👍 激励相容 70K</button>
+                <button class="action-btn">👎 道德风险</button>
+                <button class="action-btn">↪ Signal给朋友</button>
+                <button class="action-btn">💾 存到婚前协议</button>
+            </div>
+        </div>
+
+        <div class="tags">
+            <span class="tag">#逆向选择</span>
+            <span class="tag">#信息不对称</span>
+            <span class="tag">#委托代理</span>
+            <span class="tag">#柠檬市场</span>
+            <span class="tag">#信号传递</span>
+            <span class="tag">#Akerlof</span>
+            <span class="tag">#Spence</span>
+            <span class="tag">#婚姻市场</span>
+        </div>
+
+        <div class="comment-section">
+            <h3 style="margin-bottom:20px;">评论 (1,970)</h3>
+            
+            <div class="comment">
+                <div class="avatar">A</div>
+                <div class="comment-body">
+                    <h4>Akerlof_Stan <span>1970</span></h4>
+                    <p>这个理论让我获得了诺贝尔奖。你们拿它来解释约会市场是认真的吗？</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">D</div>
+                <div class="comment-body">
+                    <h4>Divorced_Economist <span>3年前</span></h4>
+                    <p>我前妻就是个lemon。早知道应该要求她signal一下。</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">S</div>
+                <div class="comment-body">
+                    <h4>Single_And_Screening <span>情人节</span></h4>
+                    <p>所以这就是为什么我要求对方有学历的原因...screening mechanism!</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">P</div>
+                <div class="comment-body">
+                    <h4>Principal_Agent_Victim <span>刚刚</span></h4>
+                    <p>我老婆的participation constraint是满足了，但她完全没有incentive compatibility</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">💔</div>
+                <div class="comment-body">
+                    <h4>Unsatisfied_Principal <span>刚刚</span></h4>
+                    <p>标题就是我的人生写照</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h4 style="margin-bottom:15px; color:#888;">相关推荐</h4>
+        
+        <a href="marginal-utility.html" class="sidebar-item">
+            <div class="sidebar-thumb">📉📉<br>DIMINISH</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">多人运动的上限：边际效用递减</div>
+                <div class="sidebar-meta">Marginal_Master · 300万观看</div>
+            </div>
+        </a>
+
+        <a href="invisible-hand.html" class="sidebar-item">
+            <div class="sidebar-thumb">👋📈<br>EQUILIBRIUM</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">看不见的手让我最大化了</div>
+                <div class="sidebar-meta">Adam_Smith · 1776万观看</div>
+            </div>
+        </a>
+
+        <a href="free-rider.html" class="sidebar-item">
+            <div class="sidebar-thumb">🚴‍♂️💨<br>FREE</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">免费骑乘：他享受了但不付费</div>
+                <div class="sidebar-meta">Public_Goods · 1954万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">💍📊<br>MATCHING</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">稳定婚姻匹配算法详解</div>
+                <div class="sidebar-meta">Gale_Shapley · 214万观看</div>
+            </div>
+        </a>
+
+        <div class="ad-box">
+            <b>被逆向选择了？</b><br>
+            <small>升级Premium学习如何设计筛选机制</small><br>
+            <button style="background:#ff9900; border:none; padding:8px 15px; margin-top:10px; cursor:pointer; font-weight:bold;">🍋 避开柠檬</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const textScreen = document.getElementById('scrollingText');
+    const progressBar = document.getElementById('readingProgress');
+
+    textScreen.addEventListener('scroll', () => {
+        const scrollTop = textScreen.scrollTop;
+        const scrollHeight = textScreen.scrollHeight - textScreen.clientHeight;
+        const scrolled = (scrollTop / scrollHeight) * 100;
+        progressBar.style.width = scrolled + "%";
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>看不见的手让我最大化了 - SmithHub</title>
+    <style>
+        body { background-color: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; }
+        a { text-decoration: none; color: inherit; }
+        
+        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+
+        .main-container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        .video-wrapper {
+            background: #111;
+            border: 1px solid #333;
+            margin-bottom: 15px;
+        }
+
+        .animation-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #graph-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 控制条 */
+        .controls {
+            background: #1b1b1b;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .play-btn {
+            background: #ff9900;
+            border: none;
+            color: #000;
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .play-btn:hover { background: #ffaa22; }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #333;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff9900;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .time-display { color: #888; font-size: 12px; }
+
+        /* 标题等 */
+        .video-title { font-size: 24px; margin: 15px 0 10px 0; color: #fff; }
+        .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
+        .action-btn:hover { background: #444; }
+        .btn-orange { color: #ff9900; }
+
+        .tags { margin: 15px 0; }
+        .tag { background:#222; padding:5px 10px; border-radius:10px; color:#888; font-size:12px; margin-right: 5px; display: inline-block; }
+
+        .description { background: #111; border: 1px solid #333; padding: 20px; margin-top: 15px; color: #ccc; line-height: 1.8; }
+        .description h3 { color: #ff9900; margin-bottom: 15px; font-size: 16px; }
+
+        /* 状态文字覆盖层 */
+        .status-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 10px 25px;
+            border: 1px solid #ff9900;
+            font-size: 18px;
+            color: #ff9900;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 10;
+        }
+
+        .status-overlay.visible { opacity: 1; }
+
+        /* 最高潮特效 */
+        .climax-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,153,0,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .climax-overlay.visible { opacity: 1; }
+
+        @media (max-width: 600px) {
+            .video-title { font-size: 18px; }
+            .controls { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Smith<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888;">Premium Content</div>
+</header>
+
+<div class="main-container">
+    
+    <div class="video-wrapper">
+        <div class="animation-container">
+            <canvas id="graph-canvas"></canvas>
+            <div class="status-overlay" id="status">准备开始...</div>
+            <div class="climax-overlay" id="climax"></div>
+        </div>
+        <div class="controls">
+            <button class="play-btn" id="playBtn">▶ 开始</button>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="time-display" id="timeDisplay">0:00 / 0:15</span>
+        </div>
+    </div>
+
+    <h1 class="video-title">看不见的手让我最大化了 - 完整市场均衡过程 (动画演示)</h1>
+    
+    <div class="video-stats">
+        <span>1776万次观看 · 248年前上传</span>
+        
+        <div class="action-buttons">
+            <button class="action-btn btn-orange">👍 帕累托改进 177.6K</button>
+            <button class="action-btn">👎 无谓损失</button>
+            <button class="action-btn">↪ 外部性传播</button>
+            <button class="action-btn">💾 加入投资组合</button>
+        </div>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#InvisibleHand</span>
+        <span class="tag">#供需均衡</span>
+        <span class="tag">#帕累托最优</span>
+        <span class="tag">#市场出清</span>
+        <span class="tag">#AdamSmith</span>
+        <span class="tag">#情人节特辑</span>
+    </div>
+
+    <div class="description">
+        <h3>📋 内容简介</h3>
+        <p>
+            观看<strong>供给</strong>与<strong>需求</strong>如何在<strong>看不见的手</strong>的引导下，达到完美的<strong>市场均衡</strong>。
+        </p>
+        <p>
+            在这个过程中，<strong>消费者剩余</strong>与<strong>生产者剩余</strong>同时达到最大化，实现<strong>帕累托最优</strong>状态。
+        </p>
+        <p>
+            没有政府干预，没有价格管制，只有两条曲线、一只看不见的手、以及一个完美的交点。
+        </p>
+        <p style="color: #ff9900; font-style: italic;">
+            "每个人追求自己的利益，却在看不见的手引导下，促进了社会的整体福利。" —— Adam Smith, 1776
+        </p>
+    </div>
+
+</div>
+
+<script>
+// 获取画布
+const canvas = document.getElementById('graph-canvas');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+const climax = document.getElementById('climax');
+const playBtn = document.getElementById('playBtn');
+const progressFill = document.getElementById('progressFill');
+const timeDisplay = document.getElementById('timeDisplay');
+
+// 动画参数
+let animationId = null;
+let isPlaying = false;
+let progress = 0;
+const duration = 15000; // 15秒
+let startTime = null;
+
+// 调整画布大小
+function resizeCanvas() {
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth * 2; // 高清
+    canvas.height = container.clientHeight * 2;
+    ctx.scale(2, 2);
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// 画布实际显示尺寸
+function getSize() {
+    return {
+        w: canvas.width / 2,
+        h: canvas.height / 2
+    };
+}
+
+// 绘制坐标轴
+function drawAxes() {
+    const { w, h } = getSize();
+    const margin = 60;
+    
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 2;
+    
+    // Y轴
+    ctx.beginPath();
+    ctx.moveTo(margin, margin);
+    ctx.lineTo(margin, h - margin);
+    ctx.stroke();
+    
+    // X轴
+    ctx.beginPath();
+    ctx.moveTo(margin, h - margin);
+    ctx.lineTo(w - margin, h - margin);
+    ctx.stroke();
+    
+    // 标签
+    ctx.fillStyle = '#888';
+    ctx.font = '14px Arial';
+    ctx.fillText('价格 P', margin - 10, margin - 15);
+    ctx.fillText('数量 Q', w - margin + 10, h - margin + 5);
+    ctx.fillText('O', margin - 20, h - margin + 20);
+}
+
+// 绘制需求曲线（向右下方倾斜！！价格越低需求量越大！！）
+function drawDemandCurve(shift = 0) {
+    const { w, h } = getSize();
+    const margin = 60;
+    
+    ctx.strokeStyle = '#ff6b6b';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    for (let x = 0; x <= w - 2 * margin; x++) {
+        const normalX = x / (w - 2 * margin);
+        // 需求曲线：x增加，y增加（在canvas坐标系里y向下是增加，所以价格降低）
+        const y = normalX * (h - 2 * margin) * 0.8 + margin * 0.5;
+        
+        if (x === 0) {
+            ctx.moveTo(margin + x, margin + y + shift);
+        } else {
+            ctx.lineTo(margin + x, margin + y + shift);
+        }
+    }
+    ctx.stroke();
+    
+    // 标签 - 放在曲线右下角
+    ctx.fillStyle = '#ff6b6b';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('D (需求)', w - margin - 60, h - margin - 30 + shift);
+}
+
+// 绘制供给曲线（向右上方倾斜！！价格越高供给量越大！！）
+function drawSupplyCurve(shift = 0) {
+    const { w, h } = getSize();
+    const margin = 60;
+    
+    ctx.strokeStyle = '#4ecdc4';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    
+    for (let x = 0; x <= w - 2 * margin; x++) {
+        const normalX = x / (w - 2 * margin);
+        // 供给曲线：x增加，价格增加（y减小，因为canvas的y是向下的）
+        const y = (1 - normalX) * (h - 2 * margin) * 0.8 + margin * 0.5;
+        
+        if (x === 0) {
+            ctx.moveTo(margin + x, margin + y + shift);
+        } else {
+            ctx.lineTo(margin + x, margin + y + shift);
+        }
+    }
+    ctx.stroke();
+    
+    // 标签 - 放在曲线右上角
+    ctx.fillStyle = '#4ecdc4';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('S (供给)', w - margin - 60, margin + 30 + shift);
+}
+
+// 绘制均衡点
+function drawEquilibrium(visible = false, pulse = false) {
+    if (!visible) return;
+    
+    const { w, h } = getSize();
+    const margin = 60;
+    
+    // 均衡点位置（曲线交点）
+    const eqX = margin + (w - 2 * margin) * 0.5;
+    const eqY = margin + (h - 2 * margin) * 0.5;
+    
+    // 虚线到坐标轴
+    ctx.strokeStyle = '#ff9900';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    
+    ctx.beginPath();
+    ctx.moveTo(eqX, eqY);
+    ctx.lineTo(margin, eqY);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(eqX, eqY);
+    ctx.lineTo(eqX, h - margin);
+    ctx.stroke();
+    
+    ctx.setLineDash([]);
+    
+    // 均衡点
+    const radius = pulse ? 12 + Math.sin(Date.now() / 100) * 4 : 8;
+    
+    ctx.beginPath();
+    ctx.arc(eqX, eqY, radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#ff9900';
+    ctx.fill();
+    
+    // 标签
+    ctx.fillStyle = '#ff9900';
+    ctx.font = 'bold 14px Arial';
+    ctx.fillText('P*', margin - 30, eqY + 5);
+    ctx.fillText('Q*', eqX - 5, h - margin + 25);
+    ctx.fillText('E', eqX + 15, eqY - 10);
+}
+
+// 绘制看不见的手
+function drawHand(x, y, opacity = 1) {
+    ctx.font = '50px Arial';
+    ctx.globalAlpha = opacity;
+    ctx.fillText('👋', x - 25, y + 15);
+    ctx.globalAlpha = 1;
+}
+
+// 绘制消费者剩余和生产者剩余
+function drawSurplus(visible = false) {
+    if (!visible) return;
+    
+    const { w, h } = getSize();
+    const margin = 60;
+    
+    const eqX = margin + (w - 2 * margin) * 0.5;
+    const eqY = margin + (h - 2 * margin) * 0.5;
+    
+    // 消费者剩余（均衡价格以上，需求曲线以下的三角形）
+    // 需求曲线从左上到右下，所以消费者剩余在均衡点上方
+    ctx.fillStyle = 'rgba(255, 107, 107, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(margin, margin + margin * 0.5); // 需求曲线起点（左上，高价格低需求）
+    ctx.lineTo(eqX, eqY); // 均衡点
+    ctx.lineTo(margin, eqY); // 均衡价格水平线与Y轴交点
+    ctx.closePath();
+    ctx.fill();
+    
+    // 生产者剩余（均衡价格以下，供给曲线以上的三角形）
+    // 供给曲线从左下到右上
+    ctx.fillStyle = 'rgba(78, 205, 196, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(margin, h - margin - margin * 0.5); // 供给曲线起点（左下，低价格低供给）
+    ctx.lineTo(eqX, eqY); // 均衡点
+    ctx.lineTo(margin, eqY); // 均衡价格水平线与Y轴交点
+    ctx.closePath();
+    ctx.fill();
+}
+
+// 主绘制函数
+function draw(progress) {
+    const { w, h } = getSize();
+    ctx.clearRect(0, 0, w, h);
+    
+    // 阶段划分
+    // 0-20%: 出现坐标轴和曲线
+    // 20-60%: 手出现并引导
+    // 60-80%: 达到均衡
+    // 80-100%: 展示剩余，高潮
+    
+    drawAxes();
+    
+    if (progress < 0.2) {
+        // 曲线渐入
+        const curveProgress = progress / 0.2;
+        ctx.globalAlpha = curveProgress;
+        drawDemandCurve(50 * (1 - curveProgress));
+        drawSupplyCurve(-50 * (1 - curveProgress));
+        ctx.globalAlpha = 1;
+        
+        status.textContent = '市场参与者入场中...';
+        status.classList.add('visible');
+        
+    } else if (progress < 0.6) {
+        // 手引导阶段
+        const handProgress = (progress - 0.2) / 0.4;
+        
+        drawDemandCurve();
+        drawSupplyCurve();
+        
+        // 手从右边移动到中间
+        const margin = 60;
+        const handX = w - margin - 50 - (w - 2 * margin - 100) * 0.5 * handProgress;
+        const handY = h / 2 + Math.sin(handProgress * Math.PI * 4) * 30;
+        
+        drawHand(handX, handY, 0.7);
+        
+        if (handProgress < 0.3) {
+            status.textContent = '看不见的手出现了...';
+        } else if (handProgress < 0.7) {
+            status.textContent = '价格信号传递中...';
+        } else {
+            status.textContent = '供需双方正在调整...';
+        }
+        status.classList.add('visible');
+        
+    } else if (progress < 0.8) {
+        // 均衡达成
+        const eqProgress = (progress - 0.6) / 0.2;
+        
+        drawDemandCurve();
+        drawSupplyCurve();
+        drawEquilibrium(true, false);
+        
+        const margin = 60;
+        const eqX = margin + (w - 2 * margin) * 0.5;
+        const eqY = margin + (h - 2 * margin) * 0.5;
+        drawHand(eqX + 30, eqY, 0.5 * (1 - eqProgress));
+        
+        status.textContent = '✨ 均衡达成！市场出清！ ✨';
+        status.classList.add('visible');
+        
+    } else {
+        // 最终阶段：展示剩余，脉冲效果
+        drawSurplus(true);
+        drawDemandCurve();
+        drawSupplyCurve();
+        drawEquilibrium(true, true);
+        
+        climax.classList.add('visible');
+        
+        const finalProgress = (progress - 0.8) / 0.2;
+        if (finalProgress < 0.5) {
+            status.textContent = '🔥 帕累托最优已达成！🔥';
+        } else {
+            status.textContent = '💰 消费者剩余 + 生产者剩余 = 最大化！ 💰';
+        }
+        status.classList.add('visible');
+    }
+}
+
+// 动画循环
+function animate(timestamp) {
+    if (!startTime) startTime = timestamp;
+    
+    const elapsed = timestamp - startTime;
+    progress = Math.min(elapsed / duration, 1);
+    
+    draw(progress);
+    
+    // 更新进度条
+    progressFill.style.width = (progress * 100) + '%';
+    const currentSec = Math.floor(elapsed / 1000);
+    const totalSec = Math.floor(duration / 1000);
+    timeDisplay.textContent = `0:${currentSec.toString().padStart(2, '0')} / 0:${totalSec}`;
+    
+    if (progress < 1) {
+        animationId = requestAnimationFrame(animate);
+    } else {
+        isPlaying = false;
+        playBtn.textContent = '↻ 重播';
+    }
+}
+
+// 播放/暂停
+playBtn.addEventListener('click', () => {
+    if (isPlaying) {
+        cancelAnimationFrame(animationId);
+        isPlaying = false;
+        playBtn.textContent = '▶ 继续';
+    } else {
+        if (progress >= 1) {
+            // 重播
+            progress = 0;
+            startTime = null;
+            climax.classList.remove('visible');
+        }
+        isPlaying = true;
+        playBtn.textContent = '⏸ 暂停';
+        animationId = requestAnimationFrame(animate);
+    }
+});
+
+// 初始绘制
+draw(0);
+status.textContent = '点击播放，见证市场的奇迹';
+status.classList.add('visible');
+</script>
+
+</body>
+</html>

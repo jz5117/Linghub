@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmithHub - 看不见的手正在为您服务</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #000; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
+        a { text-decoration: none; color: inherit; }
+
+        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; }
+        .logo-container { font-size: 28px; font-weight: bold; letter-spacing: -1px; cursor: pointer; margin-right: 30px; }
+        .logo-text { color: #fff; }
+        .logo-box { background-color: #ff9900; color: #000; padding: 2px 8px; border-radius: 4px; margin-left: 2px; }
+
+        .search-bar { flex-grow: 1; display: flex; max-width: 600px; margin: 0 20px; }
+        .search-input { width: 100%; padding: 10px; background-color: #000; border: 1px solid #333; color: #999; font-size: 16px; }
+        .search-btn { background-color: #ff9900; border: none; padding: 0 20px; color: #000; font-weight: bold; cursor: pointer; }
+
+        .nav-links { display: flex; gap: 20px; font-size: 16px; align-items: center; }
+        .nav-item { color: #fff; }
+        .nav-item:hover { color: #ff9900; }
+        .premium-btn { padding: 5px 10px; border-radius: 3px; font-weight: bold; background-color: #ff9900; color: #000; text-transform: uppercase; font-size: 12px; }
+
+        .sub-nav { background-color: #131313; padding: 10px 20px; display: flex; gap: 20px; border-bottom: 1px solid #333; overflow-x: auto; }
+        .sub-nav a { color: #ccc; white-space: nowrap; }
+        .sub-nav a:hover { color: #ff9900; }
+
+        .container { width: 95%; margin: 20px auto; }
+        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+        .section-title { font-size: 24px; font-weight: normal; }
+
+        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+        .video-card { cursor: pointer; transition: transform 0.2s; display: block; }
+        .video-card:hover { transform: translateY(-3px); }
+        .video-card:hover .title { color: #ff9900; }
+
+        .thumbnail { position: relative; width: 100%; aspect-ratio: 16/9; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #666; font-weight: bold; overflow: hidden; border: 1px solid #333; }
+        .thumbnail-content { font-size: 28px; opacity: 0.5; text-align: center; padding: 10px; line-height: 1.3; }
+        .duration { position: absolute; bottom: 5px; right: 5px; background-color: rgba(0,0,0,0.8); color: #fff; padding: 1px 4px; font-size: 12px; border: 1px solid #666; }
+        .hd-badge { position: absolute; top: 5px; left: 5px; background-color: #ff9900; color: #000; padding: 0 4px; font-size: 10px; font-weight: bold; border-radius: 2px; }
+
+        .video-info { padding-top: 8px; }
+        .title { font-size: 15px; font-weight: bold; margin-bottom: 5px; line-height: 1.3; color: #fff; }
+        .metadata { color: #777; font-size: 12px; display: flex; justify-content: space-between; }
+        .author { color: #777; font-size: 11px; margin-top: 3px; display: block; }
+
+        .ad-banner { width: 100%; height: 90px; background-color: #222; margin: 20px 0; display: flex; align-items: center; justify-content: center; border: 1px dashed #444; color: #ff9900; font-size: 18px; font-weight: bold; text-transform: uppercase; text-align: center; padding: 10px; }
+
+        footer { margin-top: 50px; padding: 40px 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 12px; }
+        .footer-links a { margin: 0 10px; }
+        .footer-links a:hover { color: #fff; }
+
+        @media (max-width: 900px) {
+            .video-grid { grid-template-columns: repeat(2, 1fr); }
+            .search-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo-container">
+        <span class="logo-text">Smith</span><span class="logo-box">Hub</span>
+    </a>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" placeholder="搜寻你的比较优势...">
+        <button class="search-btn">搜索</button>
+    </div>
+
+    <div class="nav-links">
+        <a href="404.html" class="nav-item">登录</a>
+        <a href="404.html" class="nav-item">注册</a>
+        <a href="404.html" class="premium-btn">升级到垄断会员</a>
+    </div>
+</header>
+
+<nav class="sub-nav">
+    <a href="index.html" style="color: #ff9900; border-bottom: 2px solid #ff9900;">首页</a>
+    <a href="404.html">完全竞争</a>
+    <a href="404.html">垄断专区 🔒</a>
+    <a href="404.html">寡头博弈</a>
+    <a href="404.html">外部性 (18+)</a>
+    <a href="404.html">公共物品</a>
+    <a href="404.html">信息不对称</a>
+    <a href="404.html">市场失灵</a>
+</nav>
+
+<main class="container">
+    
+    <div class="ad-banner">
+        💰 警告：你附近的单身 [套利机会] 正在消失！立即行动！
+    </div>
+
+    <div class="section-header">
+        <h2 class="section-title">🔥 最热市场行为</h2>
+    </div>
+
+    <div class="video-grid">
+        
+        <!-- 视频卡片1 -->
+        <a href="invisible-hand.html" class="video-card">
+            <div class="thumbnail">
+                <span class="hd-badge">HD</span>
+                <img src="images/invisible_hand.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">17:76</span>
+            </div>
+            <div class="video-info">
+                <div class="title">看不见的手让我最大化了 - 完整市场均衡过程</div>
+                <span class="author">Adam_Smith_Official ✓</span>
+                <div class="metadata">
+                    <span>1776万次观看</span>
+                    <span>帕累托最优</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片2 -->
+        <a href="marginal-utility.html" class="video-card">
+            <div class="thumbnail">
+                <img src="images/marginal_curve.jpg" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">N→∞</span>
+            </div>
+            <div class="video-info">
+                <div class="title">多人运动的上限：边际效用递减的残酷真相</div>
+                <span class="author">Marginal_Master</span>
+                <div class="metadata">
+                    <span>300万次观看</span>
+                    <span>递减中...</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片3 -->
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <span class="hd-badge">4K</span>
+                <img src="images/monopoly.jpg" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">∞:∞</span>
+            </div>
+            <div class="video-info">
+                <div class="title">被垄断者完全支配！没有替代品的绝望</div>
+                <span class="author">Standard_Oil</span>
+                <div class="metadata">
+                    <span>800万次观看</span>
+                    <span>无弹性</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片4 -->
+        <a href="free-rider.html" class="video-card">
+            <div class="thumbnail">
+                <img src="images/free_rider.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">00:00</span>
+            </div>
+            <div class="video-info">
+                <div class="title">免费骑乘问题：他享受了但他不付费</div>
+                <span class="author">Public_Goods_Fan</span>
+                <div class="metadata">
+                    <span>免费观看</span>
+                    <span>非排他性</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片5 -->
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <img src="images/game_theory.webp" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">2P:CO-OP</span>
+            </div>
+            <div class="video-info">
+                <div class="title">两个寡头的激烈博弈 (纳什均衡实录)</div>
+                <span class="author">Game_Theorist</span>
+                <div class="metadata">
+                    <span>314万次观看</span>
+                    <span>均衡中</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片6 -->
+        <a href="principal-agent.html" class="video-card">
+            <div class="thumbnail">
+                <span class="hd-badge">PREMIUM</span>
+                <img src="images/委托代理.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">19:70</span>
+            </div>
+            <div class="video-info">
+                <div class="title">无能的丈夫：代理人得不到满足</div>
+                <span class="author">Akerlof_Fan</span>
+                <div class="metadata">
+                    <span>197万次观看</span>
+                    <span>信息不对称</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片7 -->
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <div class="thumbnail-content">🔊😫<br>EXTERNAL</div>
+                <span class="duration">03:00AM</span>
+            </div>
+            <div class="video-info">
+                <div class="title">外部性：隔壁的声音影响了我的效用函数</div>
+                <span class="author">Pigou_Tax</span>
+                <div class="metadata">
+                    <span>420万次观看</span>
+                    <span>负外部性</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 视频卡片8 -->
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <img src="images/公地悲剧.jpg" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">SAD:END</span>
+            </div>
+            <div class="video-info">
+                <div class="title">公地悲剧：被所有人使用之后...</div>
+                <span class="author">Hardin_1968</span>
+                <div class="metadata">
+                    <span>666万次观看</span>
+                    <span>资源耗竭</span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- 第二排 -->
+    <div class="section-header" style="margin-top: 40px;">
+        <h2 class="section-title">💕 情人节特别推荐</h2>
+    </div>
+
+    <div class="video-grid">
+        
+        <a href="stable-marriage.html" class="video-card">
+            <div class="thumbnail">
+                <span class="hd-badge">❤️ HOT</span>
+                <img src="images/不动点.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">∞</span>
+            </div>
+            <div class="video-info">
+                <div class="title">稳定婚姻匹配：如何找到你的帕累托最优伴侣</div>
+                <span class="author">Gale_Shapley</span>
+                <div class="metadata">
+                    <span>214万次观看</span>
+                    <span>稳定匹配</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <div class="thumbnail-content">💔📉<br>SUNK COST</div>
+                <span class="duration">7 YEARS</span>
+            </div>
+            <div class="video-info">
+                <div class="title">沉没成本谬误：为什么你还不分手</div>
+                <span class="author">Behavioral_Econ</span>
+                <div class="metadata">
+                    <span>500万次观看</span>
+                    <span>别看了分吧</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <div class="thumbnail-content">💝🔒<br>SIGNAL</div>
+                <span class="duration">💎:🌹</span>
+            </div>
+            <div class="video-info">
+                <div class="title">昂贵信号：为什么他要送你没用的钻石</div>
+                <span class="author">Spence_1973</span>
+                <div class="metadata">
+                    <span>214万次观看</span>
+                    <span>信号传递</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="404.html" class="video-card">
+            <div class="thumbnail">
+                <img src="images/囚徒困境.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">20:20</span>
+            </div>
+            <div class="video-info">
+                <div class="title">囚徒困境：我们明明相爱却互相伤害</div>
+                <span class="author">Nash_Equilibrium</span>
+                <div class="metadata">
+                    <span>520万次观看</span>
+                    <span>非合作博弈</span>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-links">
+        <a href="404.html">关于我们</a> |
+        <a href="404.html">加入市场</a> |
+        <a href="404.html">举报市场失灵</a> |
+        <a href="404.html">反垄断投诉</a> |
+        <a href="404.html">价格政策</a>
+    </div>
+    <br>
+    <p>© 1776-2026 SmithHub. 格拉斯哥大学道德哲学系认证。</p>
+    <p>所有参与者均为理性经济人。本站仅供学术恶搞，如有不适请咨询您的边际效用。</p>
+    <p style="margin-top: 10px; color: #444;">❤️ 祝所有经济学人情人节快乐：愿你找到帕累托最优的另一半 ❤️</p>
+</footer>
+
+</body>
+</html>

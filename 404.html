@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 市场失灵 | SmithHub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #000; color: #fff; font-family: Arial, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; text-decoration: none; color: #fff; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+
+        .container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+
+        .error-code { font-size: 180px; font-weight: bold; color: #ff9900; line-height: 1; text-shadow: 0 0 50px rgba(255, 153, 0, 0.3); position: relative; }
+        .error-code::after { content: "MARKET FAILURE"; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); font-size: 14px; letter-spacing: 10px; color: #666; }
+
+        .diagnosis { margin-top: 50px; background: #111; border: 1px solid #333; padding: 30px 40px; max-width: 550px; text-align: left; }
+        .diagnosis-header { color: #ff9900; font-size: 12px; letter-spacing: 3px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        .diagnosis h2 { font-size: 28px; margin-bottom: 15px; }
+        .diagnosis-term { color: #ff9900; font-style: italic; }
+        .diagnosis p { color: #888; line-height: 1.7; margin-bottom: 15px; }
+
+        .diagnosis-list { color: #666; font-size: 14px; margin: 20px 0; padding-left: 20px; }
+        .diagnosis-list li { margin-bottom: 8px; }
+        .diagnosis-list li::marker { color: #ff9900; }
+
+        .actions { margin-top: 25px; display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; border: none; cursor: pointer; font-size: 14px; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: #ff9900; color: #000; font-weight: bold; }
+        .btn-primary:hover { background: #ffaa22; transform: scale(1.02); }
+        .btn-secondary { background: #333; color: #fff; }
+        .btn-secondary:hover { background: #444; }
+
+        .quote { margin-top: 60px; max-width: 600px; color: #444; font-style: italic; font-size: 14px; }
+        .quote-author { margin-top: 10px; color: #555; font-style: normal; }
+
+        .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 300px; color: rgba(255, 153, 0, 0.02); pointer-events: none; animation: flicker 8s infinite; z-index: -1; }
+        @keyframes flicker { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        @media (max-width: 600px) {
+            .error-code { font-size: 100px; }
+            .error-code::after { font-size: 10px; letter-spacing: 5px; }
+            .diagnosis { padding: 20px; margin: 30px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Smith<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888; font-size: 14px;">MARKET ERROR</div>
+</header>
+
+<div class="container">
+    <div class="watermark">$</div>
+    <div class="error-code">404</div>
+
+    <div class="diagnosis">
+        <div class="diagnosis-header">MARKET ANALYSIS REPORT</div>
+        <h2>市场失灵 <span class="diagnosis-term">(Market Failure)</span></h2>
+        <p>您请求的资源因市场机制失效而无法配置，或已被看不见的手移出流通领域。</p>
+        <p>可能的原因：</p>
+        <ul class="diagnosis-list">
+            <li><strong>信息不对称</strong> — 您不知道这个页面在哪，页面也不知道您要来</li>
+            <li><strong>外部性</strong> — 他人的行为导致此资源不可用，但他们没有承担成本</li>
+            <li><strong>公共物品悲剧</strong> — 此资源因过度使用而耗竭</li>
+            <li><strong>垄断性封锁</strong> — 此内容已被独家买断，您不在许可范围内</li>
+        </ul>
+        <p style="color: #555; font-size: 13px;">如果您确信市场应该提供此资源，这可能是一种 <span class="diagnosis-term">科斯定理失效</span> 的表现——交易成本太高了。</p>
+
+        <div class="actions">
+            <a href="index.html" class="btn btn-primary">↩ 返回市场</a>
+            <a href="javascript:history.back()" class="btn btn-secondary">← 需求曲线左移</a>
+        </div>
+    </div>
+
+    <div class="quote">
+        "It is not from the benevolence of the butcher, the brewer, or the baker that we expect our dinner, but from their regard to their own interest. But sometimes... the dinner just isn't there."
+        <div class="quote-author">— Adam Smith (大概)</div>
+    </div>
+</div>
+
+</body>
+</html>

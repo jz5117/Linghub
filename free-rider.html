@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>免费骑乘问题 - SmithHub</title>
+    <style>
+        body { background-color: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; }
+        a { text-decoration: none; color: inherit; }
+        
+        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+
+        .main-container { display: flex; max-width: 1400px; margin: 20px auto; gap: 20px; padding: 0 15px; }
+        .content-area { flex: 3; }
+        .sidebar { flex: 1; }
+
+        .media-wrapper { background-color: #111; border: 1px solid #333; margin-bottom: 15px; }
+        .media-content { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
+        .media-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .placeholder { color: #444; font-size: 80px; }
+
+        .video-title { font-size: 24px; margin: 15px 0 10px 0; color: #fff; }
+        .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 13px; }
+        .action-btn:hover { background: #444; }
+        .btn-orange { color: #ff9900; }
+
+        .tags { margin: 15px 0; }
+        .tag { background:#222; padding:5px 10px; border-radius:10px; color:#888; font-size:12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
+
+        .description { background: #111; border: 1px solid #333; padding: 20px; margin-top: 15px; color: #ccc; line-height: 1.8; }
+        .description h3 { color: #ff9900; margin-bottom: 15px; font-size: 16px; }
+
+        .comment-section { margin-top: 30px; }
+        .comment-section h3 { margin-bottom: 20px; }
+        .comment { display: flex; gap: 15px; margin-bottom: 20px; }
+        .avatar { width: 40px; height: 40px; background: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; }
+        .comment-body h4 { margin: 0 0 5px 0; color: #ff9900; font-size: 14px; }
+        .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
+        .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
+
+        .sidebar-item { display: flex; gap: 10px; cursor: pointer; margin-bottom: 15px; text-decoration: none; }
+        .sidebar-thumb { width: 160px; height: 90px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; font-size: 11px; text-align: center; flex-shrink: 0; }
+        .sidebar-info { flex: 1; }
+        .sidebar-title { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .sidebar-meta { font-size: 11px; color: #777; }
+        .sidebar-item:hover .sidebar-title { color: #ff9900; }
+
+        .ad-box { background:#222; padding:20px; text-align:center; border:1px dashed #444; color:#ff9900; margin-top: 15px; }
+
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .sidebar { order: 2; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Smith<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888;">Premium Content</div>
+</header>
+
+<div class="main-container">
+    <div class="content-area">
+        
+        <div class="media-wrapper">
+            <div class="media-content">
+                <div class="placeholder">🚴‍♂️💨</div>
+            </div>
+        </div>
+
+        <h1 class="video-title">免费骑乘问题：他享受了但他不付费 (Free Rider Problem)</h1>
+        
+        <div class="video-stats">
+            <span>1954万次观看 · 70年前上传</span>
+            
+            <div class="action-buttons">
+                <button class="action-btn btn-orange">👍 帕累托改进 69K</button>
+                <button class="action-btn">👎 无谓损失</button>
+                <button class="action-btn">↪ 外部性传播</button>
+                <button class="action-btn">💾 加入投资组合</button>
+            </div>
+        </div>
+
+        <div class="tags">
+            <span class="tag">#FreeRider</span>
+            <span class="tag">#公共物品</span>
+            <span class="tag">#非排他性</span>
+            <span class="tag">#非竞争性</span>
+            <span class="tag">#市场失灵</span>
+            <span class="tag">#白嫖</span>
+        </div>
+
+        <div class="description">
+            <h3>📋 内容简介</h3>
+            <p>
+                <strong>免费骑乘问题 (Free Rider Problem)</strong>，又称"搭便车问题"，是公共物品理论中的核心困境。
+            </p>
+            <p>
+                当一个物品具有<strong>非排他性</strong>（你没法阻止别人用）和<strong>非竞争性</strong>（你用了别人还能用）时，理性经济人会选择：<em>让别人付费，自己白嫖</em>。
+            </p>
+            <p>
+                结果呢？人人都想白嫖 → 没人付费 → 公共物品供给不足 → 市场失灵。
+            </p>
+            <p>
+                经典案例：国防、路灯、公共广播、开源软件、还有——你那个从不交团队作业却署名的室友。
+            </p>
+            <p style="color: #ff9900; font-style: italic;">
+                "如果你不为产品付费，那你就是产品本身。" —— 互联网时代的免费骑乘变体
+            </p>
+        </div>
+
+        <div class="comment-section">
+            <h3>评论 (1776)</h3>
+            
+            <div class="comment">
+                <div class="avatar">S</div>
+                <div class="comment-body">
+                    <h4>Samuelson_Fan <span>70年前</span></h4>
+                    <p>这就是为什么我们需要政府！市场解决不了的，税收来解决！</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">L</div>
+                <div class="comment-body">
+                    <h4>Libertarian_69 <span>30年前</span></h4>
+                    <p>政府才是最大的free rider，收我的税去养一堆官僚 😤</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">R</div>
+                <div class="comment-body">
+                    <h4>Roommate_Victim <span>2小时前</span></h4>
+                    <p>我室友看了这个视频，现在他给搭便车找到了理论依据，更加心安理得了，谢谢啊</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">E</div>
+                <div class="comment-body">
+                    <h4>Econ_Major_2026 <span>1小时前</span></h4>
+                    <p>等等，我看这个视频没付费，我是不是也在free ride？？？</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">O</div>
+                <div class="comment-body">
+                    <h4>Open_Source_Dev <span>刚刚</span></h4>
+                    <p>每一个用我代码不给star的人都欠我一个道歉</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h4 style="margin-bottom:15px; color:#888;">相关推荐</h4>
+        
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">🌾💀<br>TRAGEDY</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">公地悲剧：被所有人使用之后...</div>
+                <div class="sidebar-meta">Hardin_1968 · 666万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">🔊😫<br>EXTERNAL</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">外部性：隔壁的声音影响了我的效用</div>
+                <div class="sidebar-meta">Pigou_Tax · 420万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">🏛️💸<br>PUBLIC</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">为什么政府要收税？公共物品全解</div>
+                <div class="sidebar-meta">Public_Finance · 300万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb">🤝📉<br>COASE</div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">科斯定理：私人谈判能解决一切吗</div>
+                <div class="sidebar-meta">Law_Econ · 198万观看</div>
+            </div>
+        </a>
+
+        <div class="ad-box">
+            <b>厌倦了被白嫖？</b><br>
+            <small>升级到垄断会员，获得排他性</small><br>
+            <button style="background:#ff9900; border:none; padding:8px 15px; margin-top:10px; cursor:pointer; font-weight:bold;">💰 建立壁垒</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
