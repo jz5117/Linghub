@@ -3,338 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>边际效用递减 (完整无删减) - SmithHub</title>
+    <title>张开就不许停：口腔体操强制训练 - LingHub</title>
     <style>
         body { background-color: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; }
         a { text-decoration: none; color: inherit; }
-        
+
         header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
         .logo { font-size: 24px; font-weight: bold; }
         .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
 
         .main-container { display: flex; max-width: 1400px; margin: 20px auto; gap: 20px; padding: 0 15px; }
         .content-area { flex: 3; }
-        .sidebar { flex: 1; }
+        .sidebar { flex: 1; min-width: 220px; }
 
-        /* 伪装成播放器的阅读器 */
-        .text-player-wrapper {
-            background-color: #000;
+        /* IPA Player */
+        .ipa-player-wrapper { background: #0a0a0a; border: 1px solid #333; margin-bottom: 15px; }
+
+        .ipa-screen {
+            display: flex;
+            height: 420px;
+            border-bottom: 3px solid #ff9900;
+        }
+
+        /* Left: chart panel */
+        .chart-panel {
+            flex: 1.1;
+            padding: 12px 8px 12px 14px;
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid #222;
+        }
+
+        .chart-title {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        #ipaChart {
+            width: 100%;
+            height: calc(100% - 30px);
+            cursor: pointer;
+        }
+
+        .vowel-node { cursor: pointer; transition: all 0.15s; }
+        .vowel-node:hover circle { filter: brightness(1.4); }
+        .vowel-node.active circle { stroke-width: 3; filter: drop-shadow(0 0 6px #ff9900); }
+
+        /* Right: info panel */
+        .info-panel {
+            flex: 1;
+            padding: 20px;
+            background: #0d0d0d;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-default {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #333;
+            text-align: center;
+        }
+
+        .info-default .big-prompt {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .info-default p {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Vowel "video" display */
+        .vowel-display {
+            background: #111;
             border: 1px solid #333;
+            padding: 20px;
+            text-align: center;
             margin-bottom: 15px;
             position: relative;
         }
 
-        .text-screen {
-            height: 500px;
-            background-color: #111;
-            padding: 40px;
-            overflow-y: scroll;
-            color: #ccc;
-            font-family: 'Georgia', 'Times New Roman', serif;
-            line-height: 2;
-            font-size: 18px;
-            border-bottom: 3px solid #ff9900;
-        }
-
-        .text-screen h2 {
-            text-align: center;
-            margin-bottom: 30px;
+        .vowel-symbol-big {
+            font-family: 'Georgia', serif;
+            font-size: 88px;
             color: #ff9900;
-            font-size: 24px;
+            line-height: 1;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .text-screen h3 {
-            color: #ff9900;
-            margin: 30px 0 15px 0;
-            font-size: 18px;
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(255,153,0,0.4); }
+            50% { text-shadow: 0 0 30px rgba(255,153,0,0.9); }
         }
 
-        .text-screen .subtitle {
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 40px;
-        }
-
-        .math {
-            font-family: 'Times New Roman', serif;
-            font-size: 20px;
-            color: #fff;
-            margin: 20px 0;
-            padding: 15px 20px;
-            background: #0a0a0a;
-            border-left: 3px solid #ff9900;
-        }
-
-        .problem {
-            margin: 25px 0;
-            padding: 20px;
-            background: #0d0d0d;
-            border: 1px solid #222;
-        }
-
-        .problem-header {
-            color: #ff9900;
+        .vowel-display .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff9900;
+            color: #000;
+            font-size: 9px;
             font-weight: bold;
-            margin-bottom: 15px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
+            padding: 2px 5px;
             letter-spacing: 1px;
         }
 
-        .answer {
-            margin-top: 20px;
-            padding: 15px;
-            background: #111;
-            border: 1px dashed #333;
+        .info-progress {
+            height: 3px;
+            background: #222;
+            margin-bottom: 14px;
         }
-
-        .answer-header {
-            color: #4ecdc4;
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .sexy-comment {
-            color: #ff6b6b;
-            font-style: italic;
-            font-size: 14px;
-            margin: 10px 0;
-        }
-
-        /* 进度条 */
-        .progress-bar-container {
-            background: #333;
-            height: 5px;
-            width: 100%;
-            cursor: pointer;
-        }
-        .progress-bar {
-            background: #ff9900;
+        .info-progress-fill {
             height: 100%;
+            background: #ff9900;
             width: 0%;
+            transition: width 1.5s;
         }
 
-        /* 控制栏 */
+        .info-name { font-size: 15px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .info-en { font-size: 11px; color: #555; margin-bottom: 12px; font-style: italic; }
+
+        .feature-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+        .feat { background: #1a1a1a; border: 1px solid #333; color: #888; font-size: 11px; padding: 3px 8px; border-radius: 3px; }
+        .feat.height { border-color: #ff9900; color: #ff9900; }
+        .feat.back { border-color: #4ecdc4; color: #4ecdc4; }
+        .feat.round { border-color: #ff5555; color: #ff5555; }
+
+        .section-label {
+            color: #ff9900;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 10px 0 5px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .info-desc { color: #ccc; font-size: 13px; line-height: 1.7; margin-bottom: 4px; }
+        .info-exercise { color: #ff9900; font-size: 12px; font-style: italic; line-height: 1.6; margin-bottom: 4px; }
+        .info-examples { color: #888; font-size: 12px; line-height: 1.8; }
+        .info-examples span { color: #fff; }
+
+        .difficulty-row { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+        .diff-label { color: #555; font-size: 11px; }
+        .diff-star { color: #ff9900; font-size: 14px; }
+        .diff-star.off { color: #2a2a2a; }
+
+        /* Player controls bar */
         .player-controls {
             padding: 10px 15px;
             background: #1b1b1b;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 12px;
         }
-        
-        .control-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 20px; margin-right: 15px; }
-        .control-btn:hover { color: #ff9900; }
+        .ctrl-btn { background: none; border: none; color: #fff; cursor: pointer; font-size: 18px; }
+        .ctrl-btn:hover { color: #ff9900; }
+        .ctrl-bar { flex: 1; height: 4px; background: #333; }
+        .ctrl-fill { height: 100%; background: #ff9900; width: 0%; }
+        .ctrl-label { color: #888; font-size: 12px; }
 
+        /* Page metadata */
         .video-title { font-size: 24px; margin: 15px 0 10px 0; color: #fff; }
         .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        
         .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
         .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
         .action-btn:hover { background: #444; }
         .btn-orange { color: #ff9900; }
 
         .tags { margin: 15px 0; }
-        .tag { background:#222; padding:5px 10px; border-radius:10px; color:#888; font-size:12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
+        .tag { background: #222; padding: 5px 10px; border-radius: 10px; color: #888; font-size: 12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
 
-        /* 评论区 */
-        .comment-section { margin-top: 30px; }
+        /* Comments */
+        .comment-section { margin-top: 25px; }
         .comment { display: flex; gap: 15px; margin-bottom: 20px; }
-        .avatar { width: 40px; height: 40px; background: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; }
+        .avatar { width: 38px; height: 38px; background: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; font-size: 13px; }
         .comment-body h4 { margin: 0 0 5px 0; color: #ff9900; font-size: 14px; }
         .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
         .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
 
-        /* 侧边栏 */
+        /* Sidebar */
         .sidebar-item { display: flex; gap: 10px; cursor: pointer; margin-bottom: 15px; text-decoration: none; }
-        .sidebar-thumb { width: 160px; height: 90px; background: #333; display: flex; align-items: center; justify-content: center; color: #555; font-size: 11px; text-align: center; flex-shrink: 0; }
+        .sidebar-thumb { width: 140px; height: 78px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #555; font-size: 11px; text-align: center; flex-shrink: 0; border: 1px solid #2a2a2a; }
         .sidebar-info { flex: 1; }
-        .sidebar-title { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .sidebar-title { font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #fff; line-height: 1.3; }
         .sidebar-meta { font-size: 11px; color: #777; }
         .sidebar-item:hover .sidebar-title { color: #ff9900; }
+        .ad-box { background: #111; padding: 18px; text-align: center; border: 1px dashed #333; color: #ff9900; margin-top: 15px; }
 
-        .ad-box { background:#222; padding:20px; text-align:center; border:1px dashed #444; color:#ff9900; margin-top: 15px; }
-
-        /* 滚动条美化 */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #555; }
+        ::-webkit-scrollbar-thumb { background: #444; }
         ::-webkit-scrollbar-thumb:hover { background: #ff9900; }
 
         @media (max-width: 900px) {
             .main-container { flex-direction: column; }
+            .ipa-screen { flex-direction: column; height: auto; }
+            .chart-panel { height: 300px; }
+            .info-panel { height: 280px; }
             .sidebar { order: 2; }
-            .text-screen { height: 400px; padding: 20px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="logo">Smith<span>Hub</span></a>
-    <div style="margin-left:auto; color:#888;">Premium Academic Content</div>
+    <a href="index.html" class="logo">Ling<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888;">Premium Phonetics Content</div>
 </header>
 
 <div class="main-container">
     <div class="content-area">
-        
-        <div class="text-player-wrapper">
-            <div class="text-screen" id="scrollingText">
-                <h2>📚 INTERMEDIATE MICROECONOMICS EXAM 📚</h2>
-                <p class="subtitle">Utility Maximization Problem Set · Uncensored Full Version</p>
-                
-                <p class="sexy-comment">⚠️ Warning: The following content contains explicit mathematical expressions and may cause intellectual arousal.</p>
 
-                <div class="problem">
-                    <div class="problem-header">PROBLEM 1 · UTILITY MAXIMIZATION</div>
-                    <p>Solve utility maximization problem for consumers of various preferences:</p>
-                    
-                    <div class="math">u(x,y) = ln x + ln y</div>
-                    <div class="math">u(x,y) = xy</div>
-                    <div class="math">u(x,y) = −x² − y²</div>
-                    <div class="math">u(x,y) = −(x − x̄)² − (y − ȳ)², where x̄ > 0 and ȳ > 0</div>
+        <div class="ipa-player-wrapper">
+            <div class="ipa-screen">
+
+                <!-- Left: IPA Chart -->
+                <div class="chart-panel">
+                    <div class="chart-title">IPA Vowel Chart · 点击元音开始训练</div>
+                    <svg id="ipaChart" viewBox="0 0 440 360" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Trapezoid outline -->
+                        <polygon points="120,22 390,22 418,338 92,338" fill="none" stroke="#2a2a2a" stroke-width="1.2"/>
+
+                        <!-- Level lines -->
+                        <line x1="126" y1="88" x2="396" y2="88" stroke="#1e1e1e" stroke-width="1"/>
+                        <line x1="133" y1="135" x2="403" y2="135" stroke="#161616" stroke-width="0.8"/>
+                        <line x1="145" y1="210" x2="408" y2="210" stroke="#1e1e1e" stroke-width="1"/>
+                        <line x1="154" y1="252" x2="413" y2="252" stroke="#161616" stroke-width="0.8"/>
+
+                        <!-- Column labels -->
+                        <text x="120" y="12" fill="#3a3a3a" font-family="Arial" font-size="9" text-anchor="middle">Front</text>
+                        <text x="255" y="12" fill="#3a3a3a" font-family="Arial" font-size="9" text-anchor="middle">Central</text>
+                        <text x="390" y="12" fill="#3a3a3a" font-family="Arial" font-size="9" text-anchor="middle">Back</text>
+
+                        <!-- Row labels -->
+                        <text x="84" y="26" fill="#333" font-family="Arial" font-size="8" text-anchor="end">Close</text>
+                        <text x="84" y="92" fill="#333" font-family="Arial" font-size="8" text-anchor="end">Close-mid</text>
+                        <text x="84" y="139" fill="#333" font-family="Arial" font-size="8" text-anchor="end">Mid</text>
+                        <text x="84" y="214" fill="#333" font-family="Arial" font-size="8" text-anchor="end">Open-mid</text>
+                        <text x="84" y="256" fill="#333" font-family="Arial" font-size="8" text-anchor="end">Near-open</text>
+                        <text x="84" y="342" fill="#333" font-family="Arial" font-size="8" text-anchor="end">Open</text>
+
+                        <!-- VOWEL NODES — generated by JS below, but pre-placed for SVG fallback -->
+                    </svg>
+                    <!-- Legend -->
+                    <div style="display:flex;gap:12px;margin-top:4px;font-size:10px;color:#555;">
+                        <span><svg width="10" height="10" style="vertical-align:middle"><circle cx="5" cy="5" r="5" fill="none" stroke="#ff9900" stroke-width="1.5"/></svg> 不圆唇</span>
+                        <span><svg width="10" height="10" style="vertical-align:middle"><circle cx="5" cy="5" r="5" fill="none" stroke="#ff5555" stroke-width="1.5"/></svg> 圆唇</span>
+                        <span><svg width="10" height="10" style="vertical-align:middle"><circle cx="5" cy="5" r="5" fill="none" stroke="#aaa" stroke-width="1.5"/></svg> 中性</span>
+                    </div>
                 </div>
 
-                <p class="sexy-comment">Oh yes... those utility functions are getting more complex...</p>
-
-                <div class="answer">
-                    <div class="answer-header">💦 SOLUTION (EXPLICIT)</div>
-                    
-                    <h3>i. Regular F.O.C. Condition</h3>
-                    <p>Use regular first-order condition to find solution:</p>
-                    <div class="math">x = m / 2pₓ &nbsp;&nbsp;and&nbsp;&nbsp; y = m / 2pᵧ</div>
-                    
-                    <h3>ii. Same Preference, Same Solution</h3>
-                    <p>It is the same preference (monotonic transformation), therefore the solution is the same:</p>
-                    <div class="math">x = m / 2pₓ &nbsp;&nbsp;and&nbsp;&nbsp; y = m / 2pᵧ</div>
-                    
-                    <h3>iii. Corner Solution 🔥</h3>
-                    <p>It has corner solution. If pₓ > pᵧ, then:</p>
-                    <div class="math">x = 0 &nbsp;&nbsp;and&nbsp;&nbsp; y = m / pᵧ</div>
-                    
-                    <p class="sexy-comment">That corner solution hits different... 🥵</p>
+                <!-- Right: Info panel -->
+                <div class="info-panel" id="infoPanel">
+                    <div class="info-default" id="defaultMsg">
+                        <div class="big-prompt">👄</div>
+                        <p style="color:#444;">点击左侧元音<br>开始口腔体操训练</p>
+                        <p style="color:#333;font-size:12px;margin-top:10px;">15个元音 · 全程强制发音</p>
+                    </div>
+                    <div id="vowelInfo" style="display:none;">
+                        <div class="vowel-display" id="vowelDisplay">
+                            <div class="badge">LIVE</div>
+                            <div class="vowel-symbol-big" id="bigSymbol">i</div>
+                        </div>
+                        <div class="info-progress"><div class="info-progress-fill" id="progFill"></div></div>
+                        <div class="info-name" id="infoName"></div>
+                        <div class="info-en" id="infoEn"></div>
+                        <div class="feature-tags" id="infoFeats"></div>
+                        <div class="section-label">📋 发音指导</div>
+                        <div class="info-desc" id="infoDesc"></div>
+                        <div class="section-label">🏋️ 口腔体操动作</div>
+                        <div class="info-exercise" id="infoEx"></div>
+                        <div class="section-label">🌍 出现语言</div>
+                        <div class="info-examples" id="infoExamples"></div>
+                        <div class="difficulty-row">
+                            <span class="diff-label">难度：</span>
+                            <span id="diffStars"></span>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="problem" style="margin-top: 40px;">
-                    <div class="problem-header">PROBLEM 2 · DIMINISHING MARGINAL UTILITY</div>
-                    <p>Prove that the following utility function exhibits diminishing marginal utility:</p>
-                    <div class="math">u(x) = √x</div>
-                    
-                    <p>Calculate MU and show that ∂MU/∂x < 0</p>
-                </div>
-
-                <div class="answer">
-                    <div class="answer-header">💦 SOLUTION</div>
-                    <div class="math">MU = ∂u/∂x = 1/(2√x)</div>
-                    <div class="math">∂MU/∂x = -1/(4x^(3/2)) < 0 ✓</div>
-                    <p>As x increases, marginal utility decreases.</p>
-                    <p class="sexy-comment">The more you have, the less each additional unit satisfies you... 
-                    <br>This is why your 5th relationship feels different from your 1st. 💔</p>
-                </div>
-
-                <div class="problem" style="margin-top: 40px;">
-                    <div class="problem-header">PROBLEM 3 · MULTI-PERSON OPTIMIZATION</div>
-                    <p>Consider n consumers with identical preferences u(x) = ln(x). Total resource is fixed at X̄. Find the Pareto optimal allocation.</p>
-                </div>
-
-                <div class="answer">
-                    <div class="answer-header">💦 SOLUTION</div>
-                    <div class="math">max Σᵢ ln(xᵢ) &nbsp;&nbsp;s.t.&nbsp;&nbsp; Σᵢ xᵢ = X̄</div>
-                    <div class="math">xᵢ* = X̄/n for all i</div>
-                    <p class="sexy-comment">Equal split... the optimal "multi-person" arrangement is when everyone gets the same amount. 
-                    <br>Adding more participants = less for everyone = diminishing returns. 
-                    <br>This is the mathematical proof for "多人运动的上限".</p>
-                </div>
-
-                <p style="text-align:center; margin-top:50px; color:#666;">
-                    [END OF EXAM]
-                    <br><br>
-                    <span style="color:#ff9900;">Upgrade to Premium to access the Lagrangian Multiplier Interpretation</span>
-                </p>
-
-            </div>
-            
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="readingProgress"></div>
             </div>
 
+            <!-- Controls bar -->
             <div class="player-controls">
-                <div>
-                    <button class="control-btn" title="Play (Auto Scroll)">▶</button>
-                    <button class="control-btn" title="Volume (Inner Voice)">🔊</button>
-                    <span style="color:#888; font-size:12px;">Page 1 / ∞</span>
-                </div>
-                <div>
-                    <button class="control-btn" title="Full Screen">⛶</button>
-                </div>
+                <button class="ctrl-btn">▶</button>
+                <button class="ctrl-btn">🔊</button>
+                <div class="ctrl-bar"><div class="ctrl-fill" id="ctrlFill"></div></div>
+                <span class="ctrl-label" id="ctrlLabel">选择元音开始 · 0 / 15</span>
             </div>
         </div>
 
-        <h1 class="video-title">多人运动的上限：边际效用递减的残酷真相 (完整无删减)</h1>
-        
+        <h1 class="video-title">张开就不许停：IPA元音全套口腔体操强制训练（完整版）</h1>
+
         <div class="video-stats">
-            <span>300万次观看 · 期末考试周上传</span>
-            
+            <span>3200万次开口 · 1888年 IPA 元年上传</span>
             <div class="action-buttons">
-                <button class="action-btn btn-orange">👍 帕累托改进 42K</button>
-                <button class="action-btn">👎 挂科</button>
-                <button class="action-btn">↪ 分享给室友</button>
-                <button class="action-btn">💾 存到错题本</button>
+                <button class="action-btn btn-orange">👍 发音到位 32K</button>
+                <button class="action-btn">👎 嘴型崩了</button>
+                <button class="action-btn">↪ 传给口腔懒人</button>
+                <button class="action-btn">💾 存入音段库</button>
             </div>
         </div>
 
         <div class="tags">
-            <span class="tag">#中级微观经济学</span>
-            <span class="tag">#效用最大化</span>
-            <span class="tag">#边际效用递减</span>
-            <span class="tag">#FOC</span>
-            <span class="tag">#角点解</span>
-            <span class="tag">#期末考试</span>
-            <span class="tag">#救命</span>
+            <span class="tag">#IPA</span>
+            <span class="tag">#元音图</span>
+            <span class="tag">#口腔体操</span>
+            <span class="tag">#音系学</span>
+            <span class="tag">#语音学</span>
+            <span class="tag">#舌位</span>
+            <span class="tag">#圆唇</span>
+            <span class="tag">#双唇</span>
+            <span class="tag">#Schwa上位</span>
+            <span class="tag">#法语元音惨案</span>
+            <span class="tag">#强制发音</span>
         </div>
 
         <div class="comment-section">
-            <h3 style="margin-bottom:20px;">评论 (2,048)</h3>
-            
-            <div class="comment">
-                <div class="avatar">S</div>
-                <div class="comment-body">
-                    <h4>Struggling_Student <span>期末周</span></h4>
-                    <p>我考试前一晚看的这个，第二天直接默写，过了</p>
-                </div>
-            </div>
+            <h3 style="margin-bottom:20px;">评论 (1,888)</h3>
 
             <div class="comment">
                 <div class="avatar">P</div>
                 <div class="comment-body">
-                    <h4>Professor_Wang <span>已认证教师</span></h4>
-                    <p>这是我出的题。谁把答案传上来的？？？</p>
+                    <h4>PeterLadefoged <span>UCLA · 语音学教材作者</span></h4>
+                    <p>我写了 Vowels and Consonants 就是为了让大家认真对待这些元音。结果你们把它做成成人网站风格了。……效果好像还不错。</p>
                 </div>
             </div>
 
             <div class="comment">
-                <div class="avatar">E</div>
+                <div class="avatar">ɯ</div>
                 <div class="comment-body">
-                    <h4>Econ_Major_2026 <span>3小时前</span></h4>
-                    <p>那个corner solution真的让我很有感觉...</p>
+                    <h4>Close_Back_Unrounded <span>孤独的后元音</span></h4>
+                    <p>我是 /ɯ/。我不圆唇，我靠后，我让所有人困惑。土耳其语和韩语知道我的存在，其他人当我是异类。每次有人点击我，我都感觉被正视了一次。</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">S</div>
+                <div class="comment-body">
+                    <h4>Schwa_Supremacist <span>央元音主义者</span></h4>
+                    <p>/ə/ 才是最强元音。英语里每隔一个非重读音节就有我。我不需要努力，我不需要圆唇，我就是默认状态。你们这些边缘元音，累了吧？</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">F</div>
+                <div class="comment-body">
+                    <h4>French_Learner_Sobbing <span>学法语第31天</span></h4>
+                    <p>我以为我懂 /e/ 和 /ɛ/ 的区别，结果法语老师说我发的是同一个音。我看了这个视频三遍。还是同一个音。</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">ø</div>
+                <div class="comment-body">
+                    <h4>Front_Round_Activist <span>前圆唇解放阵线</span></h4>
+                    <p>/ø/ 和 /œ/ 的差别真的存在，不是法国人在装。我在德语 "schön" 里，我在法语 "bleu" 里。你们学普通话的以为 /y/ 就是圆唇的全部，太年轻了。</p>
+                </div>
+            </div>
+
+            <div class="comment">
+                <div class="avatar">L</div>
+                <div class="comment-body">
+                    <h4>Linguistics_TA <span>正在改卷</span></h4>
+                    <p>期末考试有道题让学生标出 /æ/ 的舌位高度，有人写"开中"，有人写"近开"，有人写"比 /ɛ/ 低一点"。都给了分。因为IPA本来就有争议。语言学万岁。</p>
                 </div>
             </div>
 
             <div class="comment">
                 <div class="avatar">M</div>
                 <div class="comment-body">
-                    <h4>Math_Lover <span>1小时前</span></h4>
-                    <p>说实话，看到漂亮的FOC比看到漂亮的人更让我兴奋</p>
-                </div>
-            </div>
-
-            <div class="comment">
-                <div class="avatar">R</div>
-                <div class="comment-body">
-                    <h4>Retake_King <span>刚刚</span></h4>
-                    <p>补考还是这套题吗？急</p>
+                    <h4>Mandarin_Native_Trauma <span>普通话母语者</span></h4>
+                    <p>普通话有 /i u y ɛ ɔ ə a/，我以为我会很多元音。然后我看了这张图，发现左边那一列（前圆唇元音）全是我人生中的空白。</p>
                 </div>
             </div>
 
@@ -343,57 +392,152 @@
 
     <div class="sidebar">
         <h4 style="margin-bottom:15px; color:#888;">相关推荐</h4>
-        
-        <a href="invisible-hand.html" class="sidebar-item">
-            <div class="sidebar-thumb">👋📈<br>EQUILIBRIUM</div>
+
+        <a href="invisible-daddy.html" class="sidebar-item">
+            <div class="sidebar-thumb" style="font-size:20px;">🔗⛓️<br><span style="font-size:9px;">GBSM</span></div>
             <div class="sidebar-info">
-                <div class="sidebar-title">看不见的手让我最大化了</div>
-                <div class="sidebar-meta">Adam_Smith · 1776万观看</div>
+                <div class="sidebar-title">他一拉紧链条，我就流了满地（GBSM）</div>
+                <div class="sidebar-meta">Invisible_Structure · 8102万观看</div>
             </div>
         </a>
 
-        <a href="free-rider.html" class="sidebar-item">
-            <div class="sidebar-thumb">🚴‍♂️💨<br>FREE</div>
+        <a href="free-variation-freeuse.html" class="sidebar-item">
+            <div class="sidebar-thumb" style="font-size:20px;">🔄💨<br><span style="font-size:9px;">FREE</span></div>
             <div class="sidebar-info">
-                <div class="sidebar-title">免费骑乘：他享受了但不付费</div>
-                <div class="sidebar-meta">Public_Goods · 1954万观看</div>
-            </div>
-        </a>
-
-        <a href="404.html" class="sidebar-item">
-            <div class="sidebar-thumb">📐📊<br>LAGRANGE</div>
-            <div class="sidebar-info">
-                <div class="sidebar-title">拉格朗日乘数法：完整深入教程</div>
-                <div class="sidebar-meta">Constrained_Opt · 800万观看</div>
+                <div class="sidebar-title">Free Variation：他换着说，但他说"都一样"</div>
+                <div class="sidebar-meta">Allophone_Freeloader · 免费观看</div>
             </div>
         </a>
 
         <a href="404.html" class="sidebar-item">
-            <div class="sidebar-thumb">🔺💀<br>HESSIAN</div>
+            <div class="sidebar-thumb" style="font-size:20px;">💥🔡<br><span style="font-size:9px;">FEAT</span></div>
             <div class="sidebar-info">
-                <div class="sidebar-title">Hessian矩阵：二阶条件详解</div>
-                <div class="sidebar-meta">SOC_Master · 500万观看</div>
+                <div class="sidebar-title">Feature Fetish：区别性特征的边界</div>
+                <div class="sidebar-meta">Jakobson_Archive · 666万观看</div>
+            </div>
+        </a>
+
+        <a href="404.html" class="sidebar-item">
+            <div class="sidebar-thumb" style="font-size:20px;">📐🔊<br><span style="font-size:9px;">OT</span></div>
+            <div class="sidebar-info">
+                <div class="sidebar-title">约束排名：谁压谁一目了然（OT入门）</div>
+                <div class="sidebar-meta">Prince_Smolensky · 410万观看</div>
             </div>
         </a>
 
         <div class="ad-box">
-            <b>期末周了？</b><br>
-            <small>升级Premium获取全部历年真题</small><br>
-            <button style="background:#ff9900; border:none; padding:8px 15px; margin-top:10px; cursor:pointer; font-weight:bold;">📚 突击复习</button>
+            <b>嘴还不够张？</b><br>
+            <small>升级 Premium 解锁辅音全套体操</small><br>
+            <button style="background:#ff9900;border:none;padding:8px 15px;margin-top:10px;cursor:pointer;font-weight:bold;">👄 继续训练</button>
         </div>
     </div>
 </div>
 
 <script>
-    const textScreen = document.getElementById('scrollingText');
-    const progressBar = document.getElementById('readingProgress');
+// ============ Vowel Data ============
+const vowelData = {
+    'i':  { cx:122, cy:22,  color:'#ff9900', name:'闭前不圆唇元音', en:'Close front unrounded vowel',    height:'闭 Close', back:'前 Front',    round:'不圆唇',   desc:'舌位最高最前，嘴角向两侧展开如微笑状。这是人类语言中最常见的高元音之一，你的口腔从未如此靠近门牙。',    exercise:'想象你在镜子前说"茄子"的那一刻——表情定格，保持3秒，不许动。',                 examples:['英语 see /siː/','法语 si /si/','普通话 衣 yī','日语 木 き ki'],  diff:1 },
+    'y':  { cx:143, cy:22,  color:'#ff5555', name:'闭前圆唇元音',   en:'Close front rounded vowel',      height:'闭 Close', back:'前 Front',    round:'圆唇',     desc:'嘴型摆好说 /i/，然后把嘴唇圆起来。你的大脑会产生认知失调——这正是练习的开始。',          exercise:'先说"衣"，嘴唇不动，然后强行把嘴撅成亲吻状。矛盾感就是 /y/ 的本质。',            examples:['普通话 鱼 yú','法语 lune /lyn/','德语 über /ˈʔyːbɐ/','粤语 鱼 jyu4'],      diff:2 },
+    'ɨ':  { cx:255, cy:22,  color:'#ff9900', name:'闭央不圆唇元音', en:'Close central unrounded vowel',  height:'闭 Close', back:'央 Central',  round:'不圆唇',   desc:'舌头既不靠前也不靠后，就悬在中间，舌位高但方向不明。这是一个没有归属感的元音。',            exercise:'说"资"或"思"，感受舌头那种不前不后的迷失状态——就是那里。',                      examples:['普通话 资 zī（部分分析）','罗马尼亚语 înainte','俄语 ты /tɨ/'],              diff:3 },
+    'ɯ':  { cx:376, cy:22,  color:'#ff9900', name:'闭后不圆唇元音', en:'Close back unrounded vowel',     height:'闭 Close', back:'后 Back',     round:'不圆唇',   desc:'舌根后缩至极限，但嘴唇保持展开。你的口腔正在做一件违反直觉的事：后缩却不圆。',              exercise:'把嘴角往两边扯，同时用力把舌根往后压。感觉喉咙要被堵住了？对了。',                   examples:['土耳其语 kız /kɯz/','韩语 으 /ɯ/','蒙古语'],                                  diff:5 },
+    'u':  { cx:397, cy:22,  color:'#ff5555', name:'闭后圆唇元音',   en:'Close back rounded vowel',       height:'闭 Close', back:'后 Back',     round:'圆唇',     desc:'舌根后缩，嘴唇圆聚。这是元音空间的另一个极点，与 /i/ 共同撑起元音对角。',                  exercise:'把嘴撅成一个尽可能小的圆，同时让舌根往嗓子眼靠。保持这个关系。',                   examples:['英语 blue /bluː/','普通话 屋 wū','法语 ou /u/','日语 う u'],                   diff:1 },
+    'e':  { cx:129, cy:88,  color:'#ff9900', name:'闭中前不圆唇元音',en:'Close-mid front unrounded vowel',height:'闭中',     back:'前 Front',    round:'不圆唇',   desc:'比 /i/ 低一点，舌头微微下沉，嘴型略微开放。很多语言的"正宗"e 就是它，不是英语那种双元音。',  exercise:'说"饿"字的前半段，但更紧一点。感受那种"几乎要说 /i/ 但又懒得上去"的感觉。',        examples:['法语 été /ete/','西班牙语 mesa','德语 See /zeː/'],                            diff:2 },
+    'ø':  { cx:150, cy:88,  color:'#ff5555', name:'闭中前圆唇元音', en:'Close-mid front rounded vowel',  height:'闭中',     back:'前 Front',    round:'圆唇',     desc:'/e/ 的舌位，/o/ 的嘴唇。发音时嘴唇圆，但舌头靠前。这个元音让你哲学地思考舌唇独立性。',     exercise:'说 /e/，然后强行圆唇。你的嘴巴会感到困惑——坚持下去，困惑就是进步。',              examples:['法语 bleu /bløː/','德语 schön /ʃøːn/'],                                    diff:4 },
+    'o':  { cx:386, cy:88,  color:'#ff5555', name:'闭中后圆唇元音', en:'Close-mid back rounded vowel',   height:'闭中',     back:'后 Back',     round:'圆唇',     desc:'经典"o"音。舌根后缩，圆唇，比 /u/ 开一级。这是全世界最被认可的 o，不是英语那个滑走的 /oʊ/。',exercise:'说"哦"，但要稳定，不要让它滑走变成双元音。稳住——这就是 /o/ 的尊严。',             examples:['西班牙语 no /no/','法语 beau /bo/','日语 お /o/','德语 so /zoː/'],            diff:1 },
+    'ə':  { cx:258, cy:135, color:'#aaa',    name:'中央元音（Schwa）',en:'Mid central vowel',             height:'中 Mid',   back:'央 Central',  round:'中性',     desc:'最懒的元音。舌头放在最放松的中央位置，嘴巴微微张开，什么都不做。英语非重读音节几乎全是它。',  exercise:'完全放松你的口腔，不要用力，不要有方向。就这样——你刚发的就是 /ə/。',              examples:['英语 about /əˈbaʊt/','英语 sofa /ˈsoʊfə/','德语 bitte','普通话 "的"轻声'],   diff:1 },
+    'ɛ':  { cx:138, cy:210, color:'#ff9900', name:'开中前不圆唇元音',en:'Open-mid front unrounded vowel', height:'开中',     back:'前 Front',    round:'不圆唇',   desc:'比 /e/ 更开，舌头再往下一点。英语的"bed"里那个懒洋洋的 e 就是它。',                        exercise:'说"爱"的第一个音，微微开口，舌头靠前，停在那里——不要继续往下掉。',                 examples:['英语 bed /bɛd/','法语 bête /bɛːt/','普通话"诶"（近似）'],                     diff:2 },
+    'œ':  { cx:159, cy:210, color:'#ff5555', name:'开中前圆唇元音', en:'Open-mid front rounded vowel',   height:'开中',     back:'前 Front',    round:'圆唇',     desc:'/ɛ/ 的身体，圆唇的灵魂。你的口腔正在经历前线与圆度的终极拉锯战。',                          exercise:'对着镜子说 /ɛ/，然后把嘴唇圆起来。你会看到一张困惑的脸——那就是正确姿势。',         examples:['法语 peur /pœʁ/','德语 zwölf /tsvœlf/','丹麦语'],                            diff:5 },
+    'ɔ':  { cx:393, cy:210, color:'#ff5555', name:'开中后圆唇元音', en:'Open-mid back rounded vowel',    height:'开中',     back:'后 Back',     round:'圆唇',     desc:'比 /o/ 更开，嘴巴开得更大一点，圆唇向前突出。英语"thought"里那个充满疑问的元音。',           exercise:'把嘴张得比 /o/ 更大，但嘴唇仍要圆。想象看到令人震惊的事情，嘴巴定格在那里。',      examples:['英语 thought /θɔːt/','法语 or /ɔʁ/','意大利语 cosa'],                         diff:2 },
+    'æ':  { cx:153, cy:252, color:'#ff9900', name:'近开前不圆唇元音',en:'Near-open front unrounded vowel',height:'近开',     back:'前 Front',    round:'不圆唇',   desc:'比 /ɛ/ 更开，比 /a/ 更靠前。英语"cat"里那个标志性的美式 a，让非英语学习者崩溃的音。',       exercise:'把下巴压低，嘴角往两边拉，舌头靠近前下方。感觉你的脸正在水平展开。',                 examples:['英语 cat /kæt/','英语 bad /bæd/','丹麦语（多数 a）'],                          diff:3 },
+    'a':  { cx:100, cy:338, color:'#ff9900', name:'开前不圆唇元音', en:'Open front unrounded vowel',     height:'开 Open',  back:'前 Front',    round:'不圆唇',   desc:'张嘴，舌头贴底，最低最开。人类语言中最常见的开元音，也是婴儿最先学会的音之一。',               exercise:'深呼吸，然后自然张嘴——你发出的就差不多了。最难的地方是"什么都不做"。',               examples:['法语 patte /pat/','西班牙语 habla','意大利语 casa','日语 あ a'],                diff:1 },
+    'ɑ':  { cx:404, cy:338, color:'#ff9900', name:'开后不圆唇元音', en:'Open back unrounded vowel',      height:'开 Open',  back:'后 Back',     round:'不圆唇',   desc:'张嘴，但舌根要往后缩。与 /a/ 看起来相似，实际上舌头位置截然不同。',                          exercise:'打哈欠——就是那个感觉。喉咙后部打开，舌根向后，然后配合元音的音色。',                  examples:['英语 father /ˈfɑːðɚ/','普通话 啊 ā（部分）','荷兰语 bad /bɑt/'],              diff:2 },
+};
 
-    textScreen.addEventListener('scroll', () => {
-        const scrollTop = textScreen.scrollTop;
-        const scrollHeight = textScreen.scrollHeight - textScreen.clientHeight;
-        const scrolled = (scrollTop / scrollHeight) * 100;
-        progressBar.style.width = scrolled + "%";
-    });
+// ============ Build SVG vowel nodes ============
+const svg = document.getElementById('ipaChart');
+let visitedCount = 0;
+let activeId = null;
+
+Object.entries(vowelData).forEach(([id, v]) => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'vowel-node');
+    g.setAttribute('data-id', id);
+    g.style.cursor = 'pointer';
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', v.cx);
+    circle.setAttribute('cy', v.cy);
+    circle.setAttribute('r', '13');
+    circle.setAttribute('fill', '#111');
+    circle.setAttribute('stroke', v.color);
+    circle.setAttribute('stroke-width', '1.8');
+    g.appendChild(circle);
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', v.cx);
+    text.setAttribute('y', v.cy + 5);
+    text.setAttribute('fill', v.color);
+    text.setAttribute('font-family', 'Georgia,serif');
+    text.setAttribute('font-size', '14');
+    text.setAttribute('text-anchor', 'middle');
+    text.textContent = id;
+    g.appendChild(text);
+
+    g.addEventListener('click', () => selectVowel(id));
+    g.addEventListener('mouseenter', () => { circle.setAttribute('r', '16'); });
+    g.addEventListener('mouseleave', () => { if (activeId !== id) circle.setAttribute('r', '13'); });
+
+    svg.appendChild(g);
+});
+
+function selectVowel(id) {
+    const v = vowelData[id];
+    if (!v) return;
+
+    // Reset previous active
+    if (activeId) {
+        const prev = svg.querySelector(`[data-id="${activeId}"] circle`);
+        if (prev) { prev.setAttribute('r', '13'); prev.setAttribute('stroke-width', '1.8'); }
+    }
+    activeId = id;
+
+    // Highlight new active
+    const cur = svg.querySelector(`[data-id="${id}"] circle`);
+    if (cur) { cur.setAttribute('r', '16'); cur.setAttribute('stroke-width', '3'); }
+
+    // Track visited
+    visitedCount++;
+
+    // Update info panel
+    document.getElementById('defaultMsg').style.display = 'none';
+    document.getElementById('vowelInfo').style.display = 'block';
+
+    document.getElementById('bigSymbol').textContent = id;
+    document.getElementById('bigSymbol').style.color = v.color;
+    document.getElementById('infoName').textContent = v.name;
+    document.getElementById('infoEn').textContent = v.en;
+
+    // Feature tags
+    document.getElementById('infoFeats').innerHTML =
+        `<span class="feat height">${v.height}</span>` +
+        `<span class="feat back">${v.back}</span>` +
+        `<span class="feat round">${v.round}</span>`;
+
+    document.getElementById('infoDesc').textContent = v.desc;
+    document.getElementById('infoEx').textContent = v.exercise;
+    document.getElementById('infoExamples').innerHTML = v.examples.map(e => `• <span>${e}</span>`).join('<br>');
+
+    // Difficulty stars
+    const stars = Array.from({length: 5}, (_, i) =>
+        `<span class="diff-star${i < v.diff ? '' : ' off'}">★</span>`).join('');
+    document.getElementById('diffStars').innerHTML = stars;
+
+    // Progress bar animation
+    const pct = (visitedCount / 15) * 100;
+    document.getElementById('progFill').style.width = Math.min(pct, 100) + '%';
+    document.getElementById('ctrlFill').style.width = Math.min(pct, 100) + '%';
+    document.getElementById('ctrlLabel').textContent = `已训练 ${Math.min(visitedCount, 15)} / 15 个元音`;
+}
 </script>
 
 </body>

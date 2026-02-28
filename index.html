@@ -47,7 +47,11 @@
         .metadata { color: #777; font-size: 12px; display: flex; justify-content: space-between; }
         .author { color: #777; font-size: 11px; margin-top: 3px; display: block; }
 
-        .ad-banner { width: 100%; height: 90px; background-color: #222; margin: 20px 0; display: flex; align-items: center; justify-content: center; border: 1px dashed #444; color: #ff9900; font-size: 18px; font-weight: bold; text-transform: uppercase; text-align: center; padding: 10px; }
+        .ad-banner { width: 100%; background-color: #1a0000; margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 18px; border: 1px solid #660000; color: #ff9900; font-size: 16px; font-weight: bold; text-align: center; padding: 14px 20px; flex-wrap: wrap; }
+        .countdown-box { display: inline-flex; align-items: center; gap: 6px; background: #000; border: 1px solid #ff0000; padding: 6px 14px; border-radius: 3px; font-size: 20px; color: #fff; white-space: nowrap; }
+        .countdown-box .timer-num { color: #ff2222; font-weight: bold; min-width: 24px; display: inline-block; text-align: center; }
+        @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0.2} }
+        .blink { animation: blink 0.7s infinite; }
 
         footer { margin-top: 50px; padding: 40px 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 12px; }
         .footer-links a { margin: 0 10px; }
@@ -92,7 +96,8 @@
 <main class="container">
 
     <div class="ad-banner">
-        🔥 警告：你附近的单身 [最小对立] 正在消失！只差一个音位，马上错过！
+        <span>🚨 你附近的单身【UR】正在等待被推倒！你已错过 3 个最小对立，继续无视将永久中和！</span>
+        <div class="countdown-box">⏰ <span class="timer-num blink" id="adTimer">59</span>s</div>
     </div>
 
     <div class="section-header">
@@ -101,35 +106,36 @@
 
     <div class="video-grid">
 
-        <!-- 卡片1：invisible-hand.html -> invisible-daddy.html -->
+        <!-- 卡片1：GBSM -->
         <a href="invisible-daddy.html" class="video-card">
             <div class="thumbnail">
-                <span class="hd-badge">HD</span>
-                <img src="images/invisible_hand.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="hd-badge">GBSM</span>
+                <img src="images/gbsm_chain.svg" style="width:100%; height:100%; object-fit:cover;">
                 <span class="duration">GOV:GB</span>
             </div>
             <div class="video-info">
-                <div class="title">看不见的 Daddy 让我服从了：管辖链条一拉我就到位</div>
+                <div class="title">他一拉紧链条，我就流了满地（GBSM）</div>
                 <span class="author">Invisible_Structure_Official ✓</span>
                 <div class="metadata">
                     <span>∞ 次可派生</span>
-                    <span>约束满足</span>
+                    <span>Well-Formed ✓</span>
                 </div>
             </div>
         </a>
 
-        <!-- 卡片2：marginal-utility.html -> marginal-pleasure.html -->
+        <!-- 卡片2：IPA口腔体操 -->
         <a href="marginal-pleasure.html" class="video-card">
             <div class="thumbnail">
-                <img src="images/marginal_curve.jpg" style="width:100%; height:100%; object-fit:cover;">
-                <span class="duration">A→??</span>
+                <span class="hd-badge">IPA</span>
+                <img src="images/ipa_vowels.svg" style="width:100%; height:100%; object-fit:cover;">
+                <span class="duration">/aɪ.piː.eɪ/</span>
             </div>
             <div class="video-info">
-                <div class="title">越看越不行：边际快感递减</div>
-                <span class="author">Acceptability_Addict</span>
+                <div class="title">张开就不许停：口腔体操强制训练</div>
+                <span class="author">IPA_Drillmaster ✓</span>
                 <div class="metadata">
-                    <span>300万次判断</span>
-                    <span>递减中…</span>
+                    <span>3200万次开口</span>
+                    <span>15个元音</span>
                 </div>
             </div>
         </a>
@@ -236,7 +242,7 @@
 
     <!-- 第二排 -->
     <div class="section-header" style="margin-top: 40px;">
-        <h2 class="section-title">💕 情人节特别推荐</h2>
+        <h2 class="section-title">💎 Premium专区</h2>
     </div>
 
     <div class="video-grid">
@@ -318,8 +324,20 @@
     <br>
     <p>© 1888-2026 LingHub. 国际音标协会（可能）认证。</p>
     <p>所有参与者默认具备母语直觉。本站仅供学术恶搞，如有不适请立刻补充更多数据。</p>
-    <p style="margin-top: 10px; color: #444;">❤️ 祝所有语言学人情人节快乐：愿你找到稳定映射的那一位 ❤️</p>
+    <p style="margin-top: 10px; color: #444;">祝大家生活性福</p>
 </footer>
 
+<script>
+(function() {
+    var t = 59;
+    var el = document.getElementById('adTimer');
+    if (!el) return;
+    setInterval(function() {
+        t--;
+        if (t < 0) t = 59;
+        el.textContent = t < 10 ? '0' + t : t;
+    }, 1000);
+})();
+</script>
 </body>
 </html>

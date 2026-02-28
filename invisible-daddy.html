@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>看不见的手让我最大化了 - SmithHub</title>
+    <title>他一拉紧链条，我就流了满地（GBSM）- LingHub</title>
     <style>
         body { background-color: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; }
         a { text-decoration: none; color: inherit; }
-        
+
         header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
         .logo { font-size: 24px; font-weight: bold; }
         .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
 
         .main-container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
 
-        .video-wrapper {
-            background: #111;
-            border: 1px solid #333;
-            margin-bottom: 15px;
-        }
+        .video-wrapper { background: #111; border: 1px solid #333; margin-bottom: 15px; }
 
         .animation-container {
             width: 100%;
@@ -28,12 +24,8 @@
             overflow: hidden;
         }
 
-        #graph-canvas {
-            width: 100%;
-            height: 100%;
-        }
+        #graph-canvas { width: 100%; height: 100%; }
 
-        /* 控制条 */
         .controls {
             background: #1b1b1b;
             padding: 10px 15px;
@@ -51,95 +43,84 @@
             cursor: pointer;
             font-size: 14px;
         }
-
         .play-btn:hover { background: #ffaa22; }
 
-        .progress-bar {
-            flex: 1;
-            height: 4px;
-            background: #333;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #ff9900;
-            width: 0%;
-            transition: width 0.1s;
-        }
-
+        .progress-bar { flex: 1; height: 4px; background: #333; cursor: pointer; }
+        .progress-fill { height: 100%; background: #ff9900; width: 0%; transition: width 0.1s; }
         .time-display { color: #888; font-size: 12px; }
 
-        /* 标题等 */
         .video-title { font-size: 24px; margin: 15px 0 10px 0; color: #fff; }
         .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        
+
         .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
         .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
         .action-btn:hover { background: #444; }
         .btn-orange { color: #ff9900; }
 
         .tags { margin: 15px 0; }
-        .tag { background:#222; padding:5px 10px; border-radius:10px; color:#888; font-size:12px; margin-right: 5px; display: inline-block; }
+        .tag { background: #222; padding: 5px 10px; border-radius: 10px; color: #888; font-size: 12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
 
         .description { background: #111; border: 1px solid #333; padding: 20px; margin-top: 15px; color: #ccc; line-height: 1.8; }
         .description h3 { color: #ff9900; margin-bottom: 15px; font-size: 16px; }
+        .description p { margin-bottom: 12px; }
 
-        /* 状态文字覆盖层 */
         .status-overlay {
             position: absolute;
-            top: 20px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            padding: 10px 25px;
+            background: rgba(0,0,0,0.85);
+            padding: 8px 20px;
             border: 1px solid #ff9900;
-            font-size: 18px;
+            font-size: 15px;
             color: #ff9900;
             text-align: center;
             opacity: 0;
             transition: opacity 0.5s;
             z-index: 10;
+            white-space: nowrap;
         }
-
         .status-overlay.visible { opacity: 1; }
 
-        /* 最高潮特效 */
         .climax-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,153,0,0.3) 0%, transparent 70%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(255,153,0,0.25) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
             z-index: 5;
         }
-
         .climax-overlay.visible { opacity: 1; }
+
+        .comment-section { margin-top: 30px; }
+        .comment { display: flex; gap: 15px; margin-bottom: 20px; }
+        .avatar { width: 40px; height: 40px; background: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; font-size: 13px; }
+        .comment-body h4 { margin: 0 0 5px 0; color: #ff9900; font-size: 14px; }
+        .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
+        .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
 
         @media (max-width: 600px) {
             .video-title { font-size: 18px; }
             .controls { flex-wrap: wrap; }
+            .status-overlay { font-size: 12px; white-space: normal; width: 90%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="logo">Smith<span>Hub</span></a>
-    <div style="margin-left:auto; color:#888;">Premium Content</div>
+    <a href="index.html" class="logo">Ling<span>Hub</span></a>
+    <div style="margin-left:auto; color:#888;">Premium Syntactic Content</div>
 </header>
 
 <div class="main-container">
-    
+
     <div class="video-wrapper">
         <div class="animation-container">
             <canvas id="graph-canvas"></canvas>
-            <div class="status-overlay" id="status">准备开始...</div>
+            <div class="status-overlay" id="status">点击播放，见证管辖的支配</div>
             <div class="climax-overlay" id="climax"></div>
         </div>
         <div class="controls">
@@ -147,350 +128,417 @@
             <div class="progress-bar" id="progressBar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <span class="time-display" id="timeDisplay">0:00 / 0:15</span>
+            <span class="time-display" id="timeDisplay">0:00 / 0:20</span>
         </div>
     </div>
 
-    <h1 class="video-title">看不见的手让我最大化了 - 完整市场均衡过程 (动画演示)</h1>
-    
+    <h1 class="video-title">他一拉紧链条，我就流了满地（GBSM）：GB理论管辖与约束完整推导 (动画演示)</h1>
+
     <div class="video-stats">
-        <span>1776万次观看 · 248年前上传</span>
-        
+        <span>8102万次推导 · 1981年上传</span>
         <div class="action-buttons">
-            <button class="action-btn btn-orange">👍 帕累托改进 177.6K</button>
-            <button class="action-btn">👎 无谓损失</button>
-            <button class="action-btn">↪ 外部性传播</button>
-            <button class="action-btn">💾 加入投资组合</button>
+            <button class="action-btn btn-orange">👍 约束满足 81.2K</button>
+            <button class="action-btn">👎 ECP违反</button>
+            <button class="action-btn">↪ Move-α 传播</button>
+            <button class="action-btn">💾 存入语料库</button>
         </div>
     </div>
 
     <div class="tags">
-        <span class="tag">#InvisibleHand</span>
-        <span class="tag">#供需均衡</span>
-        <span class="tag">#帕累托最优</span>
-        <span class="tag">#市场出清</span>
-        <span class="tag">#AdamSmith</span>
-        <span class="tag">#情人节特辑</span>
+        <span class="tag">#GB理论</span>
+        <span class="tag">#管约论</span>
+        <span class="tag">#Chomsky1981</span>
+        <span class="tag">#管辖Government</span>
+        <span class="tag">#约束Binding</span>
+        <span class="tag">#空语类</span>
+        <span class="tag">#PRO</span>
+        <span class="tag">#NP痕迹</span>
+        <span class="tag">#Move-α</span>
+        <span class="tag">#ECP</span>
+        <span class="tag">#X-bar理论</span>
+        <span class="tag">#原则参数</span>
     </div>
 
     <div class="description">
         <h3>📋 内容简介</h3>
         <p>
-            观看<strong>供给</strong>与<strong>需求</strong>如何在<strong>看不见的手</strong>的引导下，达到完美的<strong>市场均衡</strong>。
+            观看一个完整的句法推导：从 <strong>X-bar 结构</strong>的建立，到<strong>管辖关系 (Government)</strong> 的确立，再到 <strong>NP移位</strong>留下痕迹，最终由<strong>约束理论三原则 (Binding Theory)</strong> 与<strong>空语类原则 (ECP)</strong> 完成检验，推导收敛。
         </p>
         <p>
-            在这个过程中，<strong>消费者剩余</strong>与<strong>生产者剩余</strong>同时达到最大化，实现<strong>帕累托最优</strong>状态。
+            本视频覆盖 GB 理论核心模块：<strong>X-bar理论</strong> · <strong>格理论 (Case Theory)</strong> · <strong>论旨理论 (Theta Theory)</strong> · <strong>管辖 (Government)</strong> · <strong>约束原则 A / B / C</strong> · <strong>空语类</strong>（PRO · pro · NP-trace · wh-trace）· <strong>ECP (Empty Category Principle)</strong>
         </p>
         <p>
-            没有政府干预，没有价格管制，只有两条曲线、一只看不见的手、以及一个完美的交点。
+            你永远看不见那个<strong>管辖你的 Daddy</strong>——但他在那里，在结构上 c-统制着你，你的每一次移位都逃不出他的链条。链条拉紧之处，派生未崩，语法性成立。
         </p>
         <p style="color: #ff9900; font-style: italic;">
-            "每个人追求自己的利益，却在看不见的手引导下，促进了社会的整体福利。" —— Adam Smith, 1776
+            "Move α. Move anything, anywhere." —— Chomsky (1981), <em>Lectures on Government and Binding</em>
         </p>
+    </div>
+
+    <div class="comment-section">
+        <h3 style="margin-bottom:20px;">评论 (1,981)</h3>
+
+        <div class="comment">
+            <div class="avatar">N</div>
+            <div class="comment-body">
+                <h4>Noam_C <span>MIT · 1981年</span></h4>
+                <p>我发布这套理论之后，所有人都说太复杂。后来我自己也觉得太复杂，推出了最简方案。但管辖那段我现在还是觉得挺优雅的。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar">P</div>
+            <div class="comment-body">
+                <h4>PRO_Enjoyer <span>受控PRO爱好者</span></h4>
+                <p>PRO是我见过最可怜的成分——无音段内容，无格，受控于看不见的力量，只能出现在"不被管辖"的位置。它的存在本身就是对管辖的逃避。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar">E</div>
+            <div class="comment-body">
+                <h4>ECP_Victim <span>句法课挂科中</span></h4>
+                <p>空语类原则期末考了，我写"痕迹必须被适当管辖"，答对了。但我发现我自己也没被适当管辖，直接崩了。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar">A</div>
+            <div class="comment-body">
+                <h4>Anaphor_stan <span>约束原则A信徒</span></h4>
+                <p>我是反身代词，Principle A规定我必须在约束辖域内被约束。这不是我的选择。我不能自由。请不要问我为什么总是在局部出现。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar">R</div>
+            <div class="comment-body">
+                <h4>R_Expression_Free <span>已自由</span></h4>
+                <p>作为 R-expression，我受 Principle C 保护，任何地方都不能被约束。终于有原则保护我了。John 永远不会被他自己 c-统制的成分约束。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar">θ</div>
+            <div class="comment-body">
+                <h4>Theta_Assigner <span>论旨角色分配官</span></h4>
+                <p>动词分配论旨角色就像 Daddy 分配任务：施事、受事、目标、来源、受益……每个论元都要有位置，没有论旨角色的成分直接 crash。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar">S</div>
+            <div class="comment-body">
+                <h4>Subjacency_Sufferer <span>孤岛困境中</span></h4>
+                <p>想移位，但撞上了 Complex NP Constraint。孤岛就是那种让你动弹不得的结构，比某些关系还窒息。</p>
+            </div>
+        </div>
+
     </div>
 
 </div>
 
 <script>
-// 获取画布
 const canvas = document.getElementById('graph-canvas');
 const ctx = canvas.getContext('2d');
-const status = document.getElementById('status');
+const statusEl = document.getElementById('status');
 const climax = document.getElementById('climax');
 const playBtn = document.getElementById('playBtn');
 const progressFill = document.getElementById('progressFill');
 const timeDisplay = document.getElementById('timeDisplay');
 
-// 动画参数
 let animationId = null;
 let isPlaying = false;
 let progress = 0;
-const duration = 15000; // 15秒
+const duration = 20000;
 let startTime = null;
 
-// 调整画布大小
 function resizeCanvas() {
     const container = canvas.parentElement;
-    canvas.width = container.clientWidth * 2; // 高清
+    canvas.width = container.clientWidth * 2;
     canvas.height = container.clientHeight * 2;
     ctx.scale(2, 2);
 }
-
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize', () => { resizeCanvas(); draw(progress); });
 
-// 画布实际显示尺寸
-function getSize() {
+function getSize() { return { w: canvas.width / 2, h: canvas.height / 2 }; }
+
+// Sentence: "John was arrested t_i"
+// Tree: IP → NP_i (John) + I'; I' → I (was) + VP; VP → V' → V (arrested) + NP (t_i)
+function getNodes(w, h) {
+    const cx = w / 2;
+    const top = h * 0.08;
+    const rowH = h * 0.19;
     return {
-        w: canvas.width / 2,
-        h: canvas.height / 2
+        IP:    { x: cx,           y: top,              label: 'IP' },
+        NP:    { x: cx - w*0.30,  y: top + rowH,       label: 'NPᵢ',   sub: 'John' },
+        Ip:    { x: cx + w*0.08,  y: top + rowH,       label: "I'" },
+        I:     { x: cx - w*0.04,  y: top + rowH * 2,   label: 'I',     sub: 'was' },
+        VP:    { x: cx + w*0.22,  y: top + rowH * 2,   label: 'VP' },
+        Vp:    { x: cx + w*0.22,  y: top + rowH * 3,   label: "V'" },
+        V:     { x: cx + w*0.06,  y: top + rowH * 4,   label: 'V',     sub: 'arrested' },
+        trace: { x: cx + w*0.36,  y: top + rowH * 4,   label: 'NPᵢ',   sub: 'tᵢ' },
     };
 }
 
-// 绘制坐标轴
-function drawAxes() {
-    const { w, h } = getSize();
-    const margin = 60;
-    
-    ctx.strokeStyle = '#444';
-    ctx.lineWidth = 2;
-    
-    // Y轴
-    ctx.beginPath();
-    ctx.moveTo(margin, margin);
-    ctx.lineTo(margin, h - margin);
-    ctx.stroke();
-    
-    // X轴
-    ctx.beginPath();
-    ctx.moveTo(margin, h - margin);
-    ctx.lineTo(w - margin, h - margin);
-    ctx.stroke();
-    
-    // 标签
-    ctx.fillStyle = '#888';
-    ctx.font = '14px Arial';
-    ctx.fillText('价格 P', margin - 10, margin - 15);
-    ctx.fillText('数量 Q', w - margin + 10, h - margin + 5);
-    ctx.fillText('O', margin - 20, h - margin + 20);
-}
-
-// 绘制需求曲线（向右下方倾斜！！价格越低需求量越大！！）
-function drawDemandCurve(shift = 0) {
-    const { w, h } = getSize();
-    const margin = 60;
-    
-    ctx.strokeStyle = '#ff6b6b';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    
-    for (let x = 0; x <= w - 2 * margin; x++) {
-        const normalX = x / (w - 2 * margin);
-        // 需求曲线：x增加，y增加（在canvas坐标系里y向下是增加，所以价格降低）
-        const y = normalX * (h - 2 * margin) * 0.8 + margin * 0.5;
-        
-        if (x === 0) {
-            ctx.moveTo(margin + x, margin + y + shift);
-        } else {
-            ctx.lineTo(margin + x, margin + y + shift);
-        }
+function drawNode(node, color, alpha, highlight) {
+    color = color || '#fff';
+    alpha = (alpha === undefined) ? 1 : alpha;
+    const r = 16;
+    ctx.globalAlpha = alpha;
+    if (highlight) {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r + 7, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,153,0,0.18)';
+        ctx.fill();
     }
-    ctx.stroke();
-    
-    // 标签 - 放在曲线右下角
-    ctx.fillStyle = '#ff6b6b';
-    ctx.font = 'bold 16px Arial';
-    ctx.fillText('D (需求)', w - margin - 60, h - margin - 30 + shift);
-}
-
-// 绘制供给曲线（向右上方倾斜！！价格越高供给量越大！！）
-function drawSupplyCurve(shift = 0) {
-    const { w, h } = getSize();
-    const margin = 60;
-    
-    ctx.strokeStyle = '#4ecdc4';
-    ctx.lineWidth = 3;
     ctx.beginPath();
-    
-    for (let x = 0; x <= w - 2 * margin; x++) {
-        const normalX = x / (w - 2 * margin);
-        // 供给曲线：x增加，价格增加（y减小，因为canvas的y是向下的）
-        const y = (1 - normalX) * (h - 2 * margin) * 0.8 + margin * 0.5;
-        
-        if (x === 0) {
-            ctx.moveTo(margin + x, margin + y + shift);
-        } else {
-            ctx.lineTo(margin + x, margin + y + shift);
-        }
-    }
-    ctx.stroke();
-    
-    // 标签 - 放在曲线右上角
-    ctx.fillStyle = '#4ecdc4';
-    ctx.font = 'bold 16px Arial';
-    ctx.fillText('S (供给)', w - margin - 60, margin + 30 + shift);
-}
-
-// 绘制均衡点
-function drawEquilibrium(visible = false, pulse = false) {
-    if (!visible) return;
-    
-    const { w, h } = getSize();
-    const margin = 60;
-    
-    // 均衡点位置（曲线交点）
-    const eqX = margin + (w - 2 * margin) * 0.5;
-    const eqY = margin + (h - 2 * margin) * 0.5;
-    
-    // 虚线到坐标轴
-    ctx.strokeStyle = '#ff9900';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5, 5]);
-    
-    ctx.beginPath();
-    ctx.moveTo(eqX, eqY);
-    ctx.lineTo(margin, eqY);
-    ctx.stroke();
-    
-    ctx.beginPath();
-    ctx.moveTo(eqX, eqY);
-    ctx.lineTo(eqX, h - margin);
-    ctx.stroke();
-    
-    ctx.setLineDash([]);
-    
-    // 均衡点
-    const radius = pulse ? 12 + Math.sin(Date.now() / 100) * 4 : 8;
-    
-    ctx.beginPath();
-    ctx.arc(eqX, eqY, radius, 0, Math.PI * 2);
-    ctx.fillStyle = '#ff9900';
+    ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#111';
     ctx.fill();
-    
-    // 标签
-    ctx.fillStyle = '#ff9900';
-    ctx.font = 'bold 14px Arial';
-    ctx.fillText('P*', margin - 30, eqY + 5);
-    ctx.fillText('Q*', eqX - 5, h - margin + 25);
-    ctx.fillText('E', eqX + 15, eqY - 10);
-}
-
-// 绘制看不见的手
-function drawHand(x, y, opacity = 1) {
-    ctx.font = '50px Arial';
-    ctx.globalAlpha = opacity;
-    ctx.fillText('👋', x - 25, y + 15);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(node.label, node.x, node.y);
+    if (node.sub) {
+        ctx.font = '11px Arial';
+        const isTrace = node.sub === 'tᵢ';
+        ctx.fillStyle = highlight ? '#ff9900' : (isTrace ? '#888' : '#ccc');
+        ctx.fillText(node.sub, node.x, node.y + 24);
+    }
     ctx.globalAlpha = 1;
 }
 
-// 绘制消费者剩余和生产者剩余
-function drawSurplus(visible = false) {
-    if (!visible) return;
-    
-    const { w, h } = getSize();
-    const margin = 60;
-    
-    const eqX = margin + (w - 2 * margin) * 0.5;
-    const eqY = margin + (h - 2 * margin) * 0.5;
-    
-    // 消费者剩余（均衡价格以上，需求曲线以下的三角形）
-    // 需求曲线从左上到右下，所以消费者剩余在均衡点上方
-    ctx.fillStyle = 'rgba(255, 107, 107, 0.3)';
+function drawEdge(from, to, color, dashed, alpha) {
+    color = color || '#444';
+    alpha = (alpha === undefined) ? 1 : alpha;
+    ctx.globalAlpha = alpha;
     ctx.beginPath();
-    ctx.moveTo(margin, margin + margin * 0.5); // 需求曲线起点（左上，高价格低需求）
-    ctx.lineTo(eqX, eqY); // 均衡点
-    ctx.lineTo(margin, eqY); // 均衡价格水平线与Y轴交点
-    ctx.closePath();
-    ctx.fill();
-    
-    // 生产者剩余（均衡价格以下，供给曲线以上的三角形）
-    // 供给曲线从左下到右上
-    ctx.fillStyle = 'rgba(78, 205, 196, 0.3)';
-    ctx.beginPath();
-    ctx.moveTo(margin, h - margin - margin * 0.5); // 供给曲线起点（左下，低价格低供给）
-    ctx.lineTo(eqX, eqY); // 均衡点
-    ctx.lineTo(margin, eqY); // 均衡价格水平线与Y轴交点
-    ctx.closePath();
-    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    if (dashed) ctx.setLineDash([4, 4]);
+    ctx.moveTo(from.x, from.y + 16);
+    ctx.lineTo(to.x, to.y - 16);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
 }
 
-// 主绘制函数
-function draw(progress) {
+function drawGovArrow(from, to, label, alpha) {
+    alpha = (alpha === undefined) ? 1 : alpha;
+    ctx.globalAlpha = alpha;
+    const mx = (from.x + to.x) / 2 + 25;
+    const my = (from.y + to.y) / 2;
+    ctx.beginPath();
+    ctx.strokeStyle = '#4ecdc4';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.moveTo(from.x, from.y + 16);
+    ctx.lineTo(to.x, to.y - 16);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // arrowhead
+    const angle = Math.atan2((to.y - 16) - (from.y + 16), to.x - from.x);
+    ctx.beginPath();
+    ctx.fillStyle = '#4ecdc4';
+    ctx.moveTo(to.x, to.y - 16);
+    ctx.lineTo(to.x - 9*Math.cos(angle-0.4), to.y - 16 - 9*Math.sin(angle-0.4));
+    ctx.lineTo(to.x - 9*Math.cos(angle+0.4), to.y - 16 - 9*Math.sin(angle+0.4));
+    ctx.closePath();
+    ctx.fill();
+    if (label) {
+        ctx.font = 'italic 11px Arial';
+        ctx.fillStyle = '#4ecdc4';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, mx, my);
+    }
+    ctx.globalAlpha = 1;
+}
+
+function drawMoveArrow(from, to, alpha) {
+    alpha = (alpha === undefined) ? 1 : alpha;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.strokeStyle = '#ff9900';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 3]);
+    const cpx = Math.min(from.x, to.x) - 55;
+    const cpy = (from.y + to.y) / 2;
+    ctx.moveTo(from.x - 16, from.y);
+    ctx.quadraticCurveTo(cpx, cpy, to.x - 16, to.y + 16);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // arrowhead at destination
+    ctx.beginPath();
+    ctx.fillStyle = '#ff9900';
+    const ax = to.x - 16, ay = to.y + 16;
+    const aAngle = Math.atan2(ay - cpy, ax - cpx);
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(ax - 10*Math.cos(aAngle-0.4), ay - 10*Math.sin(aAngle-0.4));
+    ctx.lineTo(ax - 10*Math.cos(aAngle+0.4), ay - 10*Math.sin(aAngle+0.4));
+    ctx.closePath();
+    ctx.fill();
+    // chain label
+    ctx.font = 'bold 11px Arial';
+    ctx.fillStyle = '#ff9900';
+    ctx.textAlign = 'center';
+    ctx.fillText('Chain_i', cpx - 10, cpy);
+    ctx.globalAlpha = 1;
+}
+
+function drawAll(nodes, traceColor, traceHighlight, npHighlight) {
+    traceColor = traceColor || '#777';
+    drawEdge(nodes.IP, nodes.NP);
+    drawEdge(nodes.IP, nodes.Ip);
+    drawEdge(nodes.Ip, nodes.I);
+    drawEdge(nodes.Ip, nodes.VP);
+    drawEdge(nodes.VP, nodes.Vp);
+    drawEdge(nodes.Vp, nodes.V);
+    Object.entries(nodes).forEach(([k, n]) => {
+        if (k === 'trace') drawNode(n, traceColor, 1, traceHighlight);
+        else if (k === 'NP') drawNode(n, npHighlight ? '#ff9900' : '#fff', 1, npHighlight);
+        else drawNode(n);
+    });
+}
+
+function draw(p) {
     const { w, h } = getSize();
     ctx.clearRect(0, 0, w, h);
-    
-    // 阶段划分
-    // 0-20%: 出现坐标轴和曲线
-    // 20-60%: 手出现并引导
-    // 60-80%: 达到均衡
-    // 80-100%: 展示剩余，高潮
-    
-    drawAxes();
-    
-    if (progress < 0.2) {
-        // 曲线渐入
-        const curveProgress = progress / 0.2;
-        ctx.globalAlpha = curveProgress;
-        drawDemandCurve(50 * (1 - curveProgress));
-        drawSupplyCurve(-50 * (1 - curveProgress));
+    const nodes = getNodes(w, h);
+
+    if (p < 0.2) {
+        // Phase 1: Build X-bar tree
+        const steps = [
+            { t: 0.01, edge: [nodes.IP, nodes.NP] },
+            { t: 0.04, edge: [nodes.IP, nodes.Ip] },
+            { t: 0.07, edge: [nodes.Ip, nodes.I] },
+            { t: 0.09, edge: [nodes.Ip, nodes.VP] },
+            { t: 0.12, edge: [nodes.VP, nodes.Vp] },
+            { t: 0.14, edge: [nodes.Vp, nodes.V] },
+            { t: 0.16, edge: [nodes.Vp, nodes.trace], dashed: true, col: '#666' },
+        ];
+        const nodeSteps = [
+            { t: 0.0,  n: nodes.IP },
+            { t: 0.03, n: nodes.NP },
+            { t: 0.05, n: nodes.Ip },
+            { t: 0.08, n: nodes.I },
+            { t: 0.10, n: nodes.VP },
+            { t: 0.13, n: nodes.Vp },
+            { t: 0.15, n: nodes.V },
+            { t: 0.17, n: nodes.trace, col: '#888' },
+        ];
+        steps.forEach(s => {
+            if (p > s.t) drawEdge(s.edge[0], s.edge[1], s.col || '#444', s.dashed, Math.min(1, (p-s.t)/0.04));
+        });
+        nodeSteps.forEach(s => {
+            if (p > s.t) drawNode(s.n, s.col || '#fff', Math.min(1, (p-s.t)/0.03));
+        });
+        statusEl.textContent = '正在建立 X-bar 结构...';
+        statusEl.classList.add('visible');
+
+    } else if (p < 0.45) {
+        // Phase 2: Government relations
+        drawEdge(nodes.IP, nodes.NP); drawEdge(nodes.IP, nodes.Ip);
+        drawEdge(nodes.Ip, nodes.I); drawEdge(nodes.Ip, nodes.VP);
+        drawEdge(nodes.VP, nodes.Vp); drawEdge(nodes.Vp, nodes.V);
+        drawEdge(nodes.Vp, nodes.trace, '#666', true);
+        Object.entries(nodes).forEach(([k, n]) => drawNode(n, k === 'trace' ? '#888' : '#fff'));
+
+        const gf = (p - 0.2) / 0.25;
+        if (gf > 0.1) drawGovArrow(nodes.I, nodes.VP, 'governs', Math.min(1, (gf-0.1)/0.3));
+        if (gf > 0.5) drawGovArrow(nodes.V, nodes.trace, 'governs', Math.min(1, (gf-0.5)/0.3));
+
+        if (gf < 0.45) statusEl.textContent = '🔵 管辖建立：I 管辖 VP...';
+        else statusEl.textContent = '🔵 V 管辖宾语痕迹位置...';
+        statusEl.classList.add('visible');
+
+    } else if (p < 0.65) {
+        // Phase 3: NP movement
+        drawEdge(nodes.IP, nodes.NP); drawEdge(nodes.IP, nodes.Ip);
+        drawEdge(nodes.Ip, nodes.I); drawEdge(nodes.Ip, nodes.VP);
+        drawEdge(nodes.VP, nodes.Vp); drawEdge(nodes.Vp, nodes.V);
+        drawEdge(nodes.Vp, nodes.trace, '#666', true);
+        Object.entries(nodes).forEach(([k, n]) => {
+            if (k === 'trace') drawNode(n, '#666', 0.8);
+            else if (k === 'NP') drawNode(n, '#ff9900', 1, true);
+            else drawNode(n);
+        });
+        const mf = (p - 0.45) / 0.2;
+        drawMoveArrow(nodes.trace, nodes.NP, Math.min(1, mf * 2.5));
+        statusEl.textContent = '🟠 Move-α：NP 从宾语位置移至 Spec,IP！';
+        statusEl.classList.add('visible');
+
+    } else if (p < 0.85) {
+        // Phase 4: Binding & ECP check
+        drawEdge(nodes.IP, nodes.NP); drawEdge(nodes.IP, nodes.Ip);
+        drawEdge(nodes.Ip, nodes.I); drawEdge(nodes.Ip, nodes.VP);
+        drawEdge(nodes.VP, nodes.Vp); drawEdge(nodes.Vp, nodes.V);
+        drawEdge(nodes.Vp, nodes.trace, '#4ecdc4', true);
+        const bf = (p - 0.65) / 0.2;
+        Object.entries(nodes).forEach(([k, n]) => {
+            if (k === 'trace') drawNode(n, '#4ecdc4', 1, bf > 0.4);
+            else if (k === 'NP') drawNode(n, '#ff9900', 1, true);
+            else drawNode(n);
+        });
+        drawMoveArrow(nodes.trace, nodes.NP, 1);
+
+        ctx.globalAlpha = Math.min(1, bf * 3);
+        ctx.fillStyle = '#4ecdc4';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('✓ NP-trace A-bound by NPᵢ in Spec,IP', w/2, h * 0.87);
+        if (bf > 0.4) ctx.fillText('✓ ECP: tᵢ properly governed by V', w/2, h * 0.93);
         ctx.globalAlpha = 1;
-        
-        status.textContent = '市场参与者入场中...';
-        status.classList.add('visible');
-        
-    } else if (progress < 0.6) {
-        // 手引导阶段
-        const handProgress = (progress - 0.2) / 0.4;
-        
-        drawDemandCurve();
-        drawSupplyCurve();
-        
-        // 手从右边移动到中间
-        const margin = 60;
-        const handX = w - margin - 50 - (w - 2 * margin - 100) * 0.5 * handProgress;
-        const handY = h / 2 + Math.sin(handProgress * Math.PI * 4) * 30;
-        
-        drawHand(handX, handY, 0.7);
-        
-        if (handProgress < 0.3) {
-            status.textContent = '看不见的手出现了...';
-        } else if (handProgress < 0.7) {
-            status.textContent = '价格信号传递中...';
-        } else {
-            status.textContent = '供需双方正在调整...';
-        }
-        status.classList.add('visible');
-        
-    } else if (progress < 0.8) {
-        // 均衡达成
-        const eqProgress = (progress - 0.6) / 0.2;
-        
-        drawDemandCurve();
-        drawSupplyCurve();
-        drawEquilibrium(true, false);
-        
-        const margin = 60;
-        const eqX = margin + (w - 2 * margin) * 0.5;
-        const eqY = margin + (h - 2 * margin) * 0.5;
-        drawHand(eqX + 30, eqY, 0.5 * (1 - eqProgress));
-        
-        status.textContent = '✨ 均衡达成！市场出清！ ✨';
-        status.classList.add('visible');
-        
+
+        if (bf < 0.4) statusEl.textContent = '⚡ 链检验：tᵢ 须被 NPᵢ 在 Spec,IP A-bind…';
+        else statusEl.textContent = '⚡ ECP检验：tᵢ 须被 V 适当管辖 (properly governed)…';
+        statusEl.classList.add('visible');
+
     } else {
-        // 最终阶段：展示剩余，脉冲效果
-        drawSurplus(true);
-        drawDemandCurve();
-        drawSupplyCurve();
-        drawEquilibrium(true, true);
-        
+        // Phase 5: Convergence
+        drawEdge(nodes.IP, nodes.NP); drawEdge(nodes.IP, nodes.Ip);
+        drawEdge(nodes.Ip, nodes.I); drawEdge(nodes.Ip, nodes.VP);
+        drawEdge(nodes.VP, nodes.Vp); drawEdge(nodes.Vp, nodes.V);
+        drawEdge(nodes.Vp, nodes.trace, '#4ecdc4', true);
+        Object.entries(nodes).forEach(([k, n]) => {
+            if (k === 'trace') drawNode(n, '#4ecdc4', 1, true);
+            else if (k === 'NP') drawNode(n, '#ff9900', 1, true);
+            else drawNode(n, '#ff9900');
+        });
+        drawMoveArrow(nodes.trace, nodes.NP, 1);
+
+        const cf = (p - 0.85) / 0.15;
+        ctx.globalAlpha = Math.min(1, cf * 2);
+        ctx.fillStyle = '#4ecdc4';
+        ctx.font = 'bold 13px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('✓ 管辖满足  ·  ✓ 约束满足  ·  ✓ ECP满足', w/2, h * 0.88);
+        ctx.fillStyle = '#ff9900';
+        ctx.font = 'bold 15px Arial';
+        ctx.fillText("DOESN'T CRASH · WELL-FORMED ✓", w/2, h * 0.94);
+        ctx.globalAlpha = 1;
+
         climax.classList.add('visible');
-        
-        const finalProgress = (progress - 0.8) / 0.2;
-        if (finalProgress < 0.5) {
-            status.textContent = '🔥 帕累托最优已达成！🔥';
-        } else {
-            status.textContent = '💰 消费者剩余 + 生产者剩余 = 最大化！ 💰';
-        }
-        status.classList.add('visible');
+        const cp = (p - 0.85) / 0.15;
+        statusEl.textContent = cp < 0.5 ? "🔥 派生未崩！Derivation DOESN'T CRASH！🔥" : '✨ No violations → GRAMMATICAL (GB) ✨';
+        statusEl.classList.add('visible');
     }
 }
 
-// 动画循环
 function animate(timestamp) {
     if (!startTime) startTime = timestamp;
-    
     const elapsed = timestamp - startTime;
     progress = Math.min(elapsed / duration, 1);
-    
     draw(progress);
-    
-    // 更新进度条
     progressFill.style.width = (progress * 100) + '%';
-    const currentSec = Math.floor(elapsed / 1000);
-    const totalSec = Math.floor(duration / 1000);
-    timeDisplay.textContent = `0:${currentSec.toString().padStart(2, '0')} / 0:${totalSec}`;
-    
+    const s = Math.floor(elapsed / 1000);
+    const total = Math.floor(duration / 1000);
+    timeDisplay.textContent = `0:${s.toString().padStart(2,'0')} / 0:${total}`;
     if (progress < 1) {
         animationId = requestAnimationFrame(animate);
     } else {
@@ -499,7 +547,6 @@ function animate(timestamp) {
     }
 }
 
-// 播放/暂停
 playBtn.addEventListener('click', () => {
     if (isPlaying) {
         cancelAnimationFrame(animationId);
@@ -507,7 +554,6 @@ playBtn.addEventListener('click', () => {
         playBtn.textContent = '▶ 继续';
     } else {
         if (progress >= 1) {
-            // 重播
             progress = 0;
             startTime = null;
             climax.classList.remove('visible');
@@ -518,10 +564,9 @@ playBtn.addEventListener('click', () => {
     }
 });
 
-// 初始绘制
 draw(0);
-status.textContent = '点击播放，见证市场的奇迹';
-status.classList.add('visible');
+statusEl.textContent = '点击播放，见证管辖的支配';
+statusEl.classList.add('visible');
 </script>
 
 </body>
