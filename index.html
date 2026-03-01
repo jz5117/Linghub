@@ -57,6 +57,21 @@
         .footer-links a { margin: 0 10px; }
         .footer-links a:hover { color: #fff; }
 
+        /* Emoji thumbnails */
+        .emoji-thumb {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+            padding: 14px;
+        }
+        .emoji-big { font-size: 54px; line-height: 1; opacity: 0.95; }
+        .emoji-small { font-size: 18px; line-height: 1.2; color: #bbb; opacity: 0.9; }
+
         @media (max-width: 900px) {
             .video-grid { grid-template-columns: repeat(2, 1fr); }
             .search-bar { display: none; }
@@ -106,11 +121,14 @@
 
     <div class="video-grid">
 
-        <!-- 卡片1：GBSM -->
+        <!-- 卡片1：GBSM（封面改emoji） -->
         <a href="invisible-daddy.html" class="video-card">
             <div class="thumbnail">
                 <span class="hd-badge">GBSM</span>
-                <img src="images/gbsm_chain.svg" style="width:100%; height:100%; object-fit:cover;">
+                <div class="emoji-thumb">
+                    <div class="emoji-big">⛓️🧬</div>
+                    <div class="emoji-small">CHAIN / c-COMMAND</div>
+                </div>
                 <span class="duration">GOV:GB</span>
             </div>
             <div class="video-info">
@@ -123,11 +141,14 @@
             </div>
         </a>
 
-        <!-- 卡片2：IPA口腔体操 -->
+        <!-- 卡片2：IPA口腔体操（封面改emoji） -->
         <a href="marginal-pleasure.html" class="video-card">
             <div class="thumbnail">
                 <span class="hd-badge">IPA</span>
-                <img src="images/ipa_vowels.svg" style="width:100%; height:100%; object-fit:cover;">
+                <div class="emoji-thumb">
+                    <div class="emoji-big">👄🔊</div>
+                    <div class="emoji-small">IPA DRILL</div>
+                </div>
                 <span class="duration">/aɪ.piː.eɪ/</span>
             </div>
             <div class="video-info">
@@ -140,92 +161,70 @@
             </div>
         </a>
 
-        <!-- 卡片3：原 monopoly（仍 404） -->
+        <!-- 卡片3：你先别急，我把你分段给你看（封面emoji） -->
         <a href="404.html" class="video-card">
             <div class="thumbnail">
-                <span class="hd-badge">4K</span>
-                <img src="images/monopoly.jpg" style="width:100%; height:100%; object-fit:cover;">
-                <span class="duration">LOCK:ON</span>
-            </div>
-            <div class="video-info">
-                <div class="title">被 Reviewer 2 完全支配：没有替代分析的绝望</div>
-                <span class="author">R2_OnlyFans</span>
-                <div class="metadata">
-                    <span>800万次驳回</span>
-                    <span>不许反例</span>
+                <div class="emoji-thumb">
+                    <div class="emoji-big">✂️🧩</div>
+                    <div class="emoji-small">SEGMENTATION</div>
                 </div>
-            </div>
-        </a>
-
-        <!-- 卡片4：free-rider.html -> free-variation-freeuse.html -->
-        <a href="free-variation-freeuse.html" class="video-card">
-            <div class="thumbnail">
-                <img src="images/free_rider.png" style="width:100%; height:100%; object-fit:cover;">
                 <span class="duration">FREE</span>
             </div>
             <div class="video-info">
-                <div class="title">Free Variation：他换着说，但他说“都一样”</div>
-                <span class="author">Allophone_Freeloader</span>
+                <div class="title">你先别急，我把你分段给你看</div>
+                <span class="author">Prosody_Slicer</span>
                 <div class="metadata">
-                    <span>免费观看</span>
-                    <span>可变体</span>
+                    <span>∞ 次切分</span>
+                    <span>边界可疑</span>
                 </div>
             </div>
         </a>
 
-        <!-- 卡片5：原 game theory（仍 404） -->
+        <!-- 卡片4：婴儿服 + pʰ/p/b（封面emoji） -->
         <a href="404.html" class="video-card">
             <div class="thumbnail">
-                <img src="images/game_theory.webp" style="width:100%; height:100%; object-fit:cover;">
-                <span class="duration">2P:MOVE</span>
+                <div class="emoji-thumb">
+                    <div class="emoji-big">🍼👶</div>
+                    <div class="emoji-small">pʰ vs p vs b</div>
+                </div>
+                <span class="duration">ABX</span>
             </div>
             <div class="video-info">
-                <div class="title">两套分析的激烈博弈：谁先 move 谁就输了</div>
-                <span class="author">Derivation_Wars</span>
+                <div class="title">他给我穿上婴儿服，问我p^h,p和b的区别</div>
+                <span class="author">VOT_Babytalk</span>
                 <div class="metadata">
-                    <span>314万次争吵</span>
-                    <span>均衡中</span>
+                    <span>3选1</span>
+                    <span>别装听懂</span>
                 </div>
             </div>
         </a>
 
-        <!-- 卡片6：principal-agent.html -> consent-and-cooperation.html -->
-        <a href="consent-and-cooperation.html" class="video-card">
-            <div class="thumbnail">
-                <span class="hd-badge">PREMIUM</span>
-                <img src="images/委托代理.png" style="width:100%; height:100%; object-fit:cover;">
-                <span class="duration">S↔H</span>
-            </div>
-            <div class="video-info">
-                <div class="title">说话人-听话人：你以为他爽了，其实他只在点头</div>
-                <span class="author">Pragmatics_Trap</span>
-                <div class="metadata">
-                    <span>197万次误解</span>
-                    <span>信息不对称</span>
-                </div>
-            </div>
-        </a>
-
-        <!-- 卡片7：Chomsky vs Construction Grammar（仍 404） -->
+        <!-- 卡片5：构式派（封面emoji） -->
         <a href="404.html" class="video-card">
             <div class="thumbnail">
-                <div class="thumbnail-content">🔥📚<br>FLAMEWAR</div>
+                <div class="emoji-thumb">
+                    <div class="emoji-big">🥺📚</div>
+                    <div class="emoji-small">FLAMEWAR</div>
+                </div>
                 <span class="duration">UG:18+</span>
             </div>
             <div class="video-info">
                 <div class="title">构式派跪着求饶：乔爷爷的大层级能不能别硬塞进我的构式库存</div>
                 <span class="author">Constructicon_Cope</span>
                 <div class="metadata">
-                    <span>∞ 次引用互喷</span>
-                    <span>Merge vs Constructicon</span>
+                    <span>∞ 次互喷</span>
+                    <span>Merge vs Inventory</span>
                 </div>
             </div>
         </a>
-        
-        <!-- 卡片8：原 tragedy（仍 404） -->
+
+        <!-- 卡片6：语料悲剧（封面emoji） -->
         <a href="404.html" class="video-card">
             <div class="thumbnail">
-                <img src="images/公地悲剧.jpg" style="width:100%; height:100%; object-fit:cover;">
+                <div class="emoji-thumb">
+                    <div class="emoji-big">🏷️🕳️</div>
+                    <div class="emoji-small">ANNOTATION HELL</div>
+                </div>
                 <span class="duration">SAD:END</span>
             </div>
             <div class="video-info">
@@ -233,78 +232,56 @@
                 <span class="author">Annotation_Hell</span>
                 <div class="metadata">
                     <span>666万条噪声</span>
-                    <span>资源耗竭</span>
+                    <span>索引失踪</span>
                 </div>
             </div>
         </a>
 
     </div>
 
-    <!-- 第二排 -->
+    <!-- Premium区：只保留两个 -->
     <div class="section-header" style="margin-top: 40px;">
         <h2 class="section-title">💎 Premium专区</h2>
     </div>
 
     <div class="video-grid">
 
-        <!-- stable-marriage.html -> stable-mating.html -->
-        <a href="stable-mating.html" class="video-card">
+        <!-- Premium 1：OT -->
+        <a href="404.html" class="video-card">
             <div class="thumbnail">
-                <span class="hd-badge">❤️ HOT</span>
-                <img src="images/不动点.png" style="width:100%; height:100%; object-fit:cover;">
-                <span class="duration">FIXED</span>
+                <span class="hd-badge">PREMIUM</span>
+                <div class="emoji-thumb">
+                    <div class="emoji-big">⛓️🏆</div>
+                    <div class="emoji-small">OT / CONSTRAINTS</div>
+                </div>
+                <span class="duration">OT</span>
             </div>
             <div class="video-info">
-                <div class="title">稳定配对：如何找到与你稳定映射的那个人（别再换音位了）</div>
-                <span class="author">FormMeaning_Match</span>
+                <div class="title">一堆 Constraint 轮流把我压到最优解</div>
+                <span class="author">Ranking_Domination ✓</span>
                 <div class="metadata">
-                    <span>214万次配对</span>
-                    <span>稳定映射</span>
+                    <span>Tableau 私房</span>
+                    <span>Winner Only</span>
                 </div>
             </div>
         </a>
 
+        <!-- Premium 2：递归结构 / 多P -->
         <a href="404.html" class="video-card">
             <div class="thumbnail">
-                <div class="thumbnail-content">💔📉<br>SUNK COST</div>
-                <span class="duration">7 YEARS</span>
-            </div>
-            <div class="video-info">
-                <div class="title">沉没成本：为什么你还在跟那套分析死磕</div>
-                <span class="author">Theory_Stubborn</span>
-                <div class="metadata">
-                    <span>500万次硬撑</span>
-                    <span>别看了改吧</span>
+                <span class="hd-badge">PREMIUM</span>
+                <div class="emoji-thumb">
+                    <div class="emoji-big">🌀📐</div>
+                    <div class="emoji-small">RECURSION</div>
                 </div>
-            </div>
-        </a>
-
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <div class="thumbnail-content">💝🔒<br>SIGNAL</div>
-                <span class="duration">PDF:20p</span>
+                <span class="duration">∞</span>
             </div>
             <div class="video-info">
-                <div class="title">为什么他要给你 20 页 appendix 才肯说“我同意”</div>
-                <span class="author">Appendix_King</span>
+                <div class="title">多P的极限是……</div>
+                <span class="author">Recursion_Dealer ✓</span>
                 <div class="metadata">
-                    <span>214万次补充</span>
-                    <span>信号传递</span>
-                </div>
-            </div>
-        </a>
-
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <img src="images/囚徒困境.png" style="width:100%; height:100%; object-fit:cover;">
-                <span class="duration">20:20</span>
-            </div>
-            <div class="video-info">
-                <div class="title">我们明明都想合作，却都在加约束</div>
-                <span class="author">Constraint_Addict</span>
-                <div class="metadata">
-                    <span>520万次加条款</span>
-                    <span>非合作</span>
+                    <span>继续=加深</span>
+                    <span>别喊停</span>
                 </div>
             </div>
         </a>
