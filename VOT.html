@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>他给我穿上婴儿服，问我pʰ、p和b的区别 - LingHub</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #000; color: #fff; font-family: Arial, sans-serif; }
+        a { text-decoration: none; color: inherit; }
+
+        header { background: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+
+        .main-container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        /* ── Spectrogram player ── */
+        .player-wrapper { background: #0a0a0a; border: 1px solid #333; margin-bottom: 15px; }
+
+        .spec-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border-bottom: 3px solid #ff9900;
+        }
+
+        .spec-panel {
+            position: relative;
+            padding: 14px 10px 10px;
+            border-right: 1px solid #1a1a1a;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .spec-panel:last-child { border-right: none; }
+        .spec-panel:hover { background: #0f0f0f; }
+        .spec-panel.active { background: #0d0d0d; outline: 2px solid #ff9900; outline-offset: -2px; }
+
+        .spec-label {
+            text-align: center;
+            font-size: 28px;
+            font-family: Georgia, serif;
+            font-weight: bold;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .spec-label.ph { color: #ff9900; }
+        .spec-label.p  { color: #4ecdc4; }
+        .spec-label.b  { color: #ff5555; }
+
+        .spec-sublabel {
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        canvas.spec-canvas {
+            display: block;
+            width: 100%;
+            height: 160px;
+            border: 1px solid #1a1a1a;
+            background: #050505;
+        }
+
+        .vot-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #888;
+            font-size: 10px;
+            padding: 2px 6px;
+            font-family: monospace;
+        }
+        .spec-panel.active .vot-badge { border-color: #ff9900; color: #ff9900; }
+
+        .waveform-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            background: #060606;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .wave-panel {
+            padding: 6px 10px;
+            border-right: 1px solid #1a1a1a;
+        }
+        .wave-panel:last-child { border-right: none; }
+
+        canvas.wave-canvas {
+            display: block;
+            width: 100%;
+            height: 50px;
+            background: #060606;
+        }
+
+        .axis-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: #080808;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .axis-cell {
+            padding: 4px 10px;
+            border-right: 1px solid #1a1a1a;
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+        }
+        .axis-cell:last-child { border-right: none; }
+        .axis-cell span { color: #ff9900; font-family: monospace; }
+
+        .controls-bar {
+            background: #1b1b1b;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .ctrl-btn { background: #ff9900; border: none; color: #000; padding: 7px 18px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .ctrl-btn:hover { background: #ffaa22; }
+        .ctrl-btn.secondary { background: #333; color: #fff; }
+        .ctrl-btn.secondary:hover { background: #444; }
+        .ctrl-info { flex: 1; color: #666; font-size: 12px; }
+
+        /* ── Info panel below specs ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .info-card {
+            background: #0d0d0d;
+            border: 1px solid #222;
+            padding: 14px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .info-card:hover { border-color: #444; }
+        .info-card.active-ph { border-color: #ff9900; }
+        .info-card.active-p  { border-color: #4ecdc4; }
+        .info-card.active-b  { border-color: #ff5555; }
+
+        .card-symbol { font-size: 36px; font-family: Georgia, serif; margin-bottom: 8px; }
+        .card-ph .card-symbol { color: #ff9900; }
+        .card-p  .card-symbol { color: #4ecdc4; }
+        .card-b  .card-symbol { color: #ff5555; }
+        .card-name { font-size: 12px; font-weight: bold; color: #ccc; margin-bottom: 6px; }
+        .card-vot  { font-size: 11px; color: #777; margin-bottom: 8px; font-family: monospace; }
+        .card-desc { font-size: 12px; color: #888; line-height: 1.6; }
+
+        .feature-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+        .feat { font-size: 10px; padding: 2px 7px; border-radius: 2px; }
+        .feat-asp  { background: #1a1200; border: 1px solid #ff9900; color: #ff9900; }
+        .feat-voi  { background: #1a0000; border: 1px solid #ff5555; color: #ff5555; }
+        .feat-stop { background: #111; border: 1px solid #333; color: #666; }
+
+        /* ── Page meta ── */
+        .video-title { font-size: 22px; margin: 15px 0 10px; color: #fff; }
+        .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
+        .action-btn:hover { background: #444; }
+        .btn-orange { color: #ff9900; }
+
+        .tags { margin: 15px 0; }
+        .tag { background: #222; padding: 5px 10px; border-radius: 10px; color: #888; font-size: 12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
+
+        /* ── Comments ── */
+        .comment-section { margin-top: 30px; }
+        .comment { display: flex; gap: 15px; margin-bottom: 22px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; font-size: 13px; }
+        .av-ph { background: #ff9900; }
+        .av-p  { background: #4ecdc4; }
+        .av-b  { background: #ff5555; }
+        .av-g  { background: #888; }
+        .comment-body h4 { margin: 0 0 5px; color: #ff9900; font-size: 14px; }
+        .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
+        .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Ling<span>Hub</span></a>
+    <div style="margin-left:auto;color:#888;">VOT Lab · 送气清浊三路对比</div>
+</header>
+
+<div class="main-container">
+
+    <div class="player-wrapper">
+        <!-- Spectrograms -->
+        <div class="spec-area">
+            <div class="spec-panel active" id="panel-ph" onclick="selectPhone('ph')">
+                <div class="spec-label ph">/pʰ/</div>
+                <div class="spec-sublabel">送气清塞音</div>
+                <canvas class="spec-canvas" id="spec-ph" width="300" height="160"></canvas>
+                <div class="vot-badge" id="vot-ph">VOT ≈ +80ms</div>
+            </div>
+            <div class="spec-panel" id="panel-p" onclick="selectPhone('p')">
+                <div class="spec-label p">/p/</div>
+                <div class="spec-sublabel">不送气清塞音</div>
+                <canvas class="spec-canvas" id="spec-p" width="300" height="160"></canvas>
+                <div class="vot-badge" id="vot-p">VOT ≈ +10ms</div>
+            </div>
+            <div class="spec-panel" id="panel-b" onclick="selectPhone('b')">
+                <div class="spec-label b">/b/</div>
+                <div class="spec-sublabel">不送气浊塞音</div>
+                <canvas class="spec-canvas" id="spec-b" width="300" height="160"></canvas>
+                <div class="vot-badge" id="vot-b">VOT ≈ −80ms</div>
+            </div>
+        </div>
+
+        <!-- Waveforms -->
+        <div class="waveform-row">
+            <div class="wave-panel"><canvas class="wave-canvas" id="wave-ph" width="300" height="50"></canvas></div>
+            <div class="wave-panel"><canvas class="wave-canvas" id="wave-p"  width="300" height="50"></canvas></div>
+            <div class="wave-panel"><canvas class="wave-canvas" id="wave-b"  width="300" height="50"></canvas></div>
+        </div>
+
+        <!-- Axis labels -->
+        <div class="axis-row">
+            <div class="axis-cell">0 Hz <span>5500 Hz</span></div>
+            <div class="axis-cell">0 Hz <span>5500 Hz</span></div>
+            <div class="axis-cell">0 Hz <span>5500 Hz</span></div>
+        </div>
+
+        <div class="controls-bar">
+            <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">▶ 播放对比</button>
+            <button class="ctrl-btn secondary" onclick="selectPhone('ph')">pʰ</button>
+            <button class="ctrl-btn secondary" onclick="selectPhone('p')">p</button>
+            <button class="ctrl-btn secondary" onclick="selectPhone('b')">b</button>
+            <span class="ctrl-info" id="ctrlInfo">点击音标聚焦 · 点击播放听对比</span>
+        </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-grid">
+        <div class="info-card card-ph active-ph" id="card-ph" onclick="selectPhone('ph')">
+            <div class="card-symbol">/pʰ/</div>
+            <div class="card-name">送气清双唇塞音</div>
+            <div class="card-vot">VOT ≈ +60 ~ +100 ms</div>
+            <div class="card-desc">爆发后有明显的送气段（aspiration），声门在爆发瞬间打开，气流冲出形成浊音起始前的湍流。频谱图上爆发后有一段宽频噪声带。</div>
+            <div class="feature-row">
+                <span class="feat feat-stop">−voiced</span>
+                <span class="feat feat-asp">+aspirated</span>
+                <span class="feat feat-stop">−sonorant</span>
+            </div>
+        </div>
+        <div class="info-card card-p" id="card-p" onclick="selectPhone('p')">
+            <div class="card-symbol">/p/</div>
+            <div class="card-name">不送气清双唇塞音</div>
+            <div class="card-vot">VOT ≈ 0 ~ +20 ms</div>
+            <div class="card-desc">爆发后几乎立即开始浊音，没有送气段。普通话中这个音对应汉语拼音"b"——注意：普通话的"b"实际上是不送气清音，不是真正的浊音。</div>
+            <div class="feature-row">
+                <span class="feat feat-stop">−voiced</span>
+                <span class="feat feat-stop">−aspirated</span>
+                <span class="feat feat-stop">−sonorant</span>
+            </div>
+        </div>
+        <div class="info-card card-b" id="card-b" onclick="selectPhone('b')">
+            <div class="card-symbol">/b/</div>
+            <div class="card-name">不送气浊双唇塞音</div>
+            <div class="card-vot">VOT ≈ −60 ~ −100 ms</div>
+            <div class="card-desc">浊音在爆发之前就已开始（prevoicing），声带在阻塞期振动。频谱图底部可见低频浊音条（voice bar），爆发前即有能量。英语"b"、法语"b"属于此类。</div>
+            <div class="feature-row">
+                <span class="feat feat-voi">+voiced</span>
+                <span class="feat feat-stop">−aspirated</span>
+                <span class="feat feat-stop">−sonorant</span>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="video-title">他给我穿上婴儿服，问我pʰ、p和b的区别：VOT三路频谱完整对比（声学分析）</h1>
+
+    <div class="video-stats">
+        <span>ABX测试通过率 34% · 声学语音学实验室出品</span>
+        <div class="action-buttons">
+            <button class="action-btn btn-orange">👍 终于听出来了 3.4K</button>
+            <button class="action-btn">👎 还是一样的音</button>
+            <button class="action-btn">↪ 传给ABX难民</button>
+            <button class="action-btn">💾 存入声学库</button>
+        </div>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#VOT</span>
+        <span class="tag">#送气</span>
+        <span class="tag">#清浊对立</span>
+        <span class="tag">#双唇塞音</span>
+        <span class="tag">#频谱图</span>
+        <span class="tag">#声学语音学</span>
+        <span class="tag">#最小对立</span>
+        <span class="tag">#普通话b≠英语b</span>
+        <span class="tag">#ABX测试</span>
+        <span class="tag">#婴儿习得</span>
+    </div>
+
+    <div class="comment-section">
+        <h3 style="margin-bottom:20px;">评论 (314)</h3>
+
+        <div class="comment">
+            <div class="avatar av-ph">pʰ</div>
+            <div class="comment-body">
+                <h4>Aspirated_Pride <span>送气大使 · 已认证</span></h4>
+                <p>我的VOT是+80ms。我不是"大p"，我是有气息的清音。每次有人说"普通话没有pʰ"我都要崩溃——拼音"p"就是我，就在"爬 pá"里。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar av-p">p</div>
+            <div class="comment-body">
+                <h4>Unaspirated_Underdog <span>不送气代表</span></h4>
+                <p>我是普通话拼音"b"——但我不是浊音！我是不送气清音，英语母语者把我听成 /b/ 是因为他们的范畴边界在不同的VOT值上。这不是我的问题，是他们的感知问题。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar av-b">b</div>
+            <div class="comment-body">
+                <h4>Prevoicing_Enjoyer <span>浊音原教旨主义者</span></h4>
+                <p>我有prevoicing。在爆发之前声带就已经在振动了。法语、西班牙语、意大利语都用我。每次有人说"普通话b就是英语b"，我就哭了一次——普通话根本没有真正的我。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar av-g">婴</div>
+            <div class="comment-body">
+                <h4>Infant_Listener <span>语言习得实验室 · 6个月大</span></h4>
+                <p>研究表明，6个月大的婴儿可以区分所有语言的VOT对立，12个月后会逐渐失去母语以外的区分能力。所以我现在正处于人生中语音感知最强的阶段。（研究员代为发帖）</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar av-g">ABX</div>
+            <div class="comment-body">
+                <h4>ABX_Trauma_Survivor <span>听辨训练第99天</span></h4>
+                <p>做了三个月ABX测试，pʰ和p我已经能听出来了。问题是一到真实语流里我又全部听不出来。Praat是我最好的朋友也是我最大的敌人。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar av-g">L2</div>
+            <div class="comment-body">
+                <h4>English_Native_Crying <span>普通话L2学习者</span></h4>
+                <p>我学普通话三年了。我以为"b、p"就是英语"b、p"。然后我的老师说"不对，普通话的b实际上是不送气清音，你发的b有prevoicing"。我当场注销了我的语音记忆。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar av-g">Pr</div>
+            <div class="comment-body">
+                <h4>Praat_Evangelist <span>语音学软件传教士</span></h4>
+                <p>只要你打开Praat看一眼频谱图，所有争论立刻结束：送气段在那里，voice bar在那里，VOT数值白纸黑字。但是没有人想打开Praat，所以争论永远不会结束。</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+// ── Spectrogram generation ──
+// Each phone has different acoustic characteristics:
+// pʰ: long aspiration (high-freq noise) after burst, then vowel formants
+// p:  short VOT, quick onset of formants
+// b:  prevoicing (low-freq bar) before burst, then formants
+
+const PHONES = {
+    ph: { color: '#ff9900', vot: '+80ms', aspColor: 'rgba(255,153,0,0.6)' },
+    p:  { color: '#4ecdc4', vot: '+10ms', aspColor: 'rgba(78,205,196,0.3)' },
+    b:  { color: '#ff5555', vot: '−80ms', aspColor: 'rgba(255,85,85,0.4)' },
+};
+
+function drawSpectrogram(canvasId, phone) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // Background gradient (dark spectrogram look)
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#030303');
+    bg.addColorStop(1, '#060606');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Time sections:
+    // For pʰ: [silence 0-30%] [burst 30-35%] [aspiration 35-60%] [vowel 60-100%]
+    // For p:  [silence 0-35%] [burst 35-38%] [short asp 38-45%] [vowel 45-100%]
+    // For b:  [prevoicing 0-35%] [burst 35-38%] [vowel 38-100%]
+    const sections = phone === 'ph'
+        ? { silence:[0,0.30], burst:[0.30,0.35], asp:[0.35,0.60], vowel:[0.60,1.0] }
+        : phone === 'p'
+        ? { silence:[0,0.35], burst:[0.35,0.38], asp:[0.38,0.45], vowel:[0.45,1.0] }
+        : { prevoice:[0,0.35], burst:[0.35,0.38], vowel:[0.38,1.0] };
+
+    const freqBands = 40;
+    const bandH = H / freqBands;
+
+    // Seed for deterministic noise
+    let seed = phone.charCodeAt(0) * 137;
+    function rng() { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0) / 0xffffffff; }
+
+    function drawBand(x1pct, x2pct, freqLow, freqHigh, alpha, colorOverride) {
+        const x1 = x1pct * W, x2 = x2pct * W;
+        const y1 = H - freqHigh * H;
+        const y2 = H - freqLow * H;
+        const g = ctx.createRadialGradient((x1+x2)/2, (y1+y2)/2, 0, (x1+x2)/2, (y1+y2)/2, (x2-x1+y2-y1)/2);
+        g.addColorStop(0, colorOverride || `rgba(255,200,80,${alpha})`);
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.fillRect(x1, y1, x2-x1, y2-y1);
+    }
+
+    // ── Draw formants in vowel region ──
+    const vs = sections.vowel;
+    // F1 (low, ~800 Hz → freqNorm 0.14)
+    for (let t = vs[0]; t < vs[1]; t += 0.01) {
+        const jitter = (rng()-0.5)*0.01;
+        drawBand(t, t+0.012, 0.12+jitter, 0.16+jitter, 0.55);
+    }
+    // F2 (mid, ~1500 Hz → freqNorm 0.27)
+    for (let t = vs[0]; t < vs[1]; t += 0.01) {
+        const jitter = (rng()-0.5)*0.01;
+        drawBand(t, t+0.012, 0.24+jitter, 0.30+jitter, 0.45);
+    }
+    // F3 (higher, ~2500 Hz → freqNorm 0.45)
+    for (let t = vs[0]; t < vs[1]; t += 0.01) {
+        const jitter = (rng()-0.5)*0.015;
+        drawBand(t, t+0.012, 0.41+jitter, 0.47+jitter, 0.30);
+    }
+    // F4 faint
+    for (let t = vs[0]; t < vs[1]; t += 0.01) {
+        const jitter = (rng()-0.5)*0.01;
+        drawBand(t, t+0.012, 0.60+jitter, 0.65+jitter, 0.15);
+    }
+
+    // ── Phone-specific features ──
+    if (phone === 'ph') {
+        // Aspiration: broadband noise from burst through asp segment
+        const as = sections.asp;
+        for (let t = sections.burst[0]; t < as[1]; t += 0.008) {
+            for (let f = 0.05; f < 0.95; f += 0.04 + rng()*0.03) {
+                const alpha = (t < sections.burst[1] ? 0.45 : 0.25) * (1 - (t - sections.burst[0]) / (as[1] - sections.burst[0]) * 0.6);
+                drawBand(t, t+0.01, f, f+0.04+rng()*0.02, alpha * (rng()*0.5+0.5), `rgba(255,180,60,${alpha})`);
+            }
+        }
+        // Burst vertical stripe
+        ctx.fillStyle = 'rgba(255,200,80,0.7)';
+        ctx.fillRect(sections.burst[0]*W, 0, 4, H);
+
+    } else if (phone === 'p') {
+        // Short, faint aspiration
+        for (let t = sections.burst[0]; t < sections.asp[1]; t += 0.01) {
+            for (let f = 0.1; f < 0.8; f += 0.06 + rng()*0.04) {
+                drawBand(t, t+0.012, f, f+0.05, 0.15*(rng()*0.5+0.5), `rgba(78,205,196,0.2)`);
+            }
+        }
+        // Burst
+        ctx.fillStyle = 'rgba(78,205,196,0.6)';
+        ctx.fillRect(sections.burst[0]*W, 0, 3, H);
+
+    } else {
+        // b: prevoicing bar at low freq (voice bar)
+        const pv = sections.prevoice;
+        for (let t = pv[0]; t < pv[1]; t += 0.008) {
+            const flicker = rng()*0.03;
+            drawBand(t, t+0.01, 0.01, 0.04+flicker, 0.55, `rgba(255,85,85,0.55)`);
+        }
+        // Burst
+        ctx.fillStyle = 'rgba(255,100,80,0.7)';
+        ctx.fillRect(sections.burst[0]*W, 0, 3, H);
+    }
+
+    // ── Axis ticks (freq) ──
+    ctx.fillStyle = '#1a1a1a';
+    for (let i = 1; i < 6; i++) {
+        ctx.fillRect(0, H * i/6, W, 1);
+    }
+
+    // ── Time cursor line ──
+    ctx.strokeStyle = '#ff9900';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([3,3]);
+    // VOT marker
+    const votX = phone === 'ph' ? sections.burst[1] * W
+                : phone === 'p'  ? sections.burst[1] * W
+                : sections.burst[0] * W;
+    ctx.beginPath(); ctx.moveTo(votX, 0); ctx.lineTo(votX, H); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // VOT label
+    const col = PHONES[phone].color;
+    ctx.fillStyle = col;
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = phone === 'b' ? 'right' : 'left';
+    ctx.fillText('VOT', votX + (phone === 'b' ? -3 : 3), 12);
+}
+
+function drawWaveform(canvasId, phone) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#060606';
+    ctx.fillRect(0, 0, W, H);
+
+    // Center line
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+
+    const col = PHONES[phone].color;
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.8;
+
+    let seed2 = phone.charCodeAt(0) * 999 + 42;
+    function rng2() { seed2 = (seed2 * 6364136223846793005n ? seed2 * 1664525 + 1013904223 : seed2 * 1664525 + 1013904223) & 0xffffffff; return (seed2 >>> 0) / 0xffffffff; }
+
+    const silEnd  = phone === 'b' ? 0 : 0.32;
+    const burstEnd = 0.38;
+    const aspEnd  = phone === 'ph' ? 0.60 : phone === 'p' ? 0.46 : 0.38;
+
+    ctx.beginPath();
+    for (let i = 0; i < W; i++) {
+        const t = i / W;
+        let amp = 0;
+        if (phone === 'b' && t < 0.35) {
+            // prevoicing: small amplitude sine
+            amp = Math.sin(t * W * 0.7) * 0.08 * (rng2()*0.4+0.8);
+        } else if (t < silEnd) {
+            amp = (rng2()-0.5) * 0.04;
+        } else if (t < burstEnd) {
+            amp = (rng2()-0.5) * (t < silEnd+0.03 ? 0.8 : 0.3);
+        } else if (t < aspEnd && phone !== 'b') {
+            const aspAmp = phone === 'ph' ? 0.35 : 0.12;
+            amp = (rng2()-0.5) * aspAmp * (1 - (t-burstEnd)/(aspEnd-burstEnd)*0.5);
+        } else {
+            // Vowel: periodic
+            const freq = 180;
+            amp = Math.sin(t * W * freq / W * Math.PI * 2) * 0.4 * (0.8 + rng2()*0.2);
+        }
+        const y = H/2 - amp * H/2;
+        i === 0 ? ctx.moveTo(i, y) : ctx.lineTo(i, y);
+    }
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+}
+
+let activePhone = 'ph';
+
+function selectPhone(phone) {
+    activePhone = phone;
+    ['ph','p','b'].forEach(p => {
+        document.getElementById('panel-' + p).classList.toggle('active', p === phone);
+        document.getElementById('card-' + p).className = 'info-card card-' + p + (p === phone ? ' active-' + p : '');
+    });
+    const labels = { ph:'/pʰ/ 送气清音 — 注意爆发后的送气宽频噪声段（aspiration）', p:'/p/ 不送气清音 — 爆发后几乎立即开始元音，VOT极短', b:'/b/ 浊音 — 爆发前低频区可见浊音条（voice bar，prevoicing）' };
+    document.getElementById('ctrlInfo').textContent = labels[phone];
+}
+
+let playing = false, playTimer = null;
+function togglePlay() {
+    if (playing) {
+        clearInterval(playTimer); playing = false;
+        document.getElementById('playBtn').textContent = '▶ 播放对比';
+        return;
+    }
+    playing = true;
+    document.getElementById('playBtn').textContent = '⏸ 停止';
+    const seq = ['ph','p','b'];
+    let i = 0;
+    selectPhone(seq[i]);
+    playTimer = setInterval(() => {
+        i = (i+1) % seq.length;
+        selectPhone(seq[i]);
+        if (i === 0) { clearInterval(playTimer); playing = false; document.getElementById('playBtn').textContent = '▶ 播放对比'; }
+    }, 1800);
+}
+
+// Initial draw
+['ph','p','b'].forEach(p => {
+    drawSpectrogram('spec-' + p, p);
+    drawWaveform('wave-' + p, p);
+});
+</script>
+
+</body>
+</html>

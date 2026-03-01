@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多P的极限是…… - LingHub</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #000; color: #fff; font-family: Arial, sans-serif; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+
+        header { background: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .logo span { background: #ff9900; color: #000; padding: 2px 5px; border-radius: 3px; }
+        .depth-counter { margin-left: auto; color: #ff9900; font-family: monospace; font-size: 13px; }
+
+        .main-container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+
+        /* ── Player wrapper ── */
+        .player-wrapper { background: #0a0a0a; border: 1px solid #333; margin-bottom: 15px; }
+
+        .recursion-viewport {
+            width: 100%;
+            height: 500px;
+            overflow: auto;
+            position: relative;
+            background: #050505;
+            border-bottom: 3px solid #ff9900;
+            cursor: grab;
+        }
+        .recursion-viewport:active { cursor: grabbing; }
+
+        #recursion-canvas {
+            display: block;
+        }
+
+        .controls-bar {
+            background: #1b1b1b;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn { background: #ff9900; border: none; color: #000; padding: 7px 16px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .ctrl-btn:hover { background: #ffaa22; }
+        .ctrl-btn.sec { background: #222; color: #ccc; border: 1px solid #333; }
+        .ctrl-btn.sec:hover { background: #333; }
+        .depth-display { color: #888; font-size: 12px; font-family: monospace; flex: 1; }
+
+        /* ── Depth legend ── */
+        .legend { padding: 10px 15px; background: #080808; border-bottom: 1px solid #1a1a1a; display: flex; gap: 14px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #666; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+        /* ── Page meta ── */
+        .video-title { font-size: 22px; margin: 15px 0 10px; color: #fff; }
+        .video-stats { color: #888; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .action-btn { background: #333; color: #fff; border: none; padding: 8px 15px; cursor: pointer; font-size: 13px; }
+        .action-btn:hover { background: #444; }
+        .btn-orange { color: #ff9900; }
+
+        .tags { margin: 15px 0; }
+        .tag { background: #222; padding: 5px 10px; border-radius: 10px; color: #888; font-size: 12px; margin-right: 5px; display: inline-block; margin-bottom: 5px; }
+
+        /* ── Description ── */
+        .description { background: #111; border: 1px solid #333; padding: 20px; margin-top: 15px; color: #ccc; line-height: 1.8; }
+        .description h3 { color: #ff9900; margin-bottom: 15px; font-size: 16px; }
+        .description p { margin-bottom: 12px; }
+        .description code { background: #1a1a1a; padding: 1px 6px; border-radius: 2px; font-family: monospace; color: #ff9900; font-size: 13px; }
+
+        /* ── Comments ── */
+        .comment-section { margin-top: 30px; }
+        .comment { display: flex; gap: 15px; margin-bottom: 22px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; flex-shrink: 0; font-size: 12px; background: #ff9900; }
+        .comment-body h4 { margin: 0 0 5px; color: #ff9900; font-size: 14px; }
+        .comment-body h4 span { color: #555; font-size: 11px; font-weight: normal; }
+        .comment-body p { margin: 0; color: #ccc; font-size: 14px; line-height: 1.5; }
+
+        /* Depth note block */
+        .inline-tree {
+            background: #0d0d0d;
+            border: 1px solid #222;
+            border-left: 3px solid #ff9900;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+        .inline-tree .node { color: #ff9900; }
+        .inline-tree .leaf { color: #4ecdc4; }
+        .inline-tree .trace { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">Ling<span>Hub</span></a>
+    <div class="depth-counter" id="headerDepth">嵌套深度：∞</div>
+</header>
+
+<div class="main-container">
+
+    <div class="player-wrapper">
+        <!-- Recursion canvas -->
+        <div class="recursion-viewport" id="viewport">
+            <canvas id="recursion-canvas"></canvas>
+        </div>
+
+        <!-- Depth legend -->
+        <div class="legend" id="legend"></div>
+
+        <!-- Controls -->
+        <div class="controls-bar">
+            <button class="ctrl-btn" id="addBtn" onclick="addLayer()">＋ 再加一层 PP</button>
+            <button class="ctrl-btn sec" onclick="removeLayer()">－ 退出一层</button>
+            <button class="ctrl-btn sec" onclick="resetTree()">↺ 重置</button>
+            <button class="ctrl-btn sec" onclick="toggleAnim()">⏸ 暂停动画</button>
+            <span class="depth-display" id="depthDisplay">当前嵌套深度：1 层 PP &nbsp;|&nbsp; 节点数：—</span>
+        </div>
+    </div>
+
+    <h1 class="video-title">多P的极限是……：PP递归嵌套无限生成演示（Merge无界版）</h1>
+
+    <div class="video-stats">
+        <span>∞ 次嵌套 · 派生未崩 · Chomsky (1995) 最简方案出品</span>
+        <div class="action-buttons">
+            <button class="action-btn btn-orange">👍 还没崩 ∞K</button>
+            <button class="action-btn">👎 内存爆了</button>
+            <button class="action-btn">↪ 传给有限状态自动机</button>
+            <button class="action-btn">💾 存入无限语料库</button>
+        </div>
+    </div>
+
+    <div class="tags">
+        <span class="tag">#递归</span>
+        <span class="tag">#Merge</span>
+        <span class="tag">#PP嵌套</span>
+        <span class="tag">#无界依存</span>
+        <span class="tag">#最简方案</span>
+        <span class="tag">#X-bar理论</span>
+        <span class="tag">#人类语言唯一性</span>
+        <span class="tag">#有限手段无限表达</span>
+        <span class="tag">#Chomsky1995</span>
+    </div>
+
+    <div class="description">
+        <h3>📋 内容简介</h3>
+        <p>
+            点击 <strong>「再加一层 PP」</strong> 见证 Merge 的无限威力。每次操作，一个新的 PP（介词短语）将整个已有结构作为其补语，产生新的节点。这个过程在原则上没有上限——这正是人类语言区别于所有动物通讯系统的核心特征。
+        </p>
+        <div class="inline-tree">
+            <span class="node">PP₁</span> → P + NP<br>
+            <span class="node">PP₂</span> → P + <span class="node">PP₁</span><br>
+            <span class="node">PP₃</span> → P + <span class="node">PP₂</span> → P + [P + <span class="node">PP₁</span>]<br>
+            <span class="trace">...</span><br>
+            <span class="node">PPₙ</span> → P + <span class="node">PPₙ₋₁</span> &nbsp;（n → ∞，派生不崩）
+        </div>
+        <p>
+            经典例子：<code>the cat [on the mat [in the room [on the floor [of the building [...]]]]]</code><br>
+            每一层 PP 都是合法的句法对象，可以继续被嵌套。有限的词汇，无限的结构——这就是 <strong>递归（Recursion）</strong>。
+        </p>
+        <p style="color:#ff9900; font-style:italic;">
+            "The language faculty allows the generation of an infinite array of expressions from a finite set of elements." —— Chomsky (1995), <em>The Minimalist Program</em>
+        </p>
+    </div>
+
+    <div class="comment-section">
+        <h3 style="margin-bottom:20px;">评论 (∞)</h3>
+
+        <div class="comment">
+            <div class="avatar" style="background:#ff9900;">M</div>
+            <div class="comment-body">
+                <h4>Merge_Enthusiast <span>最简方案信徒</span></h4>
+                <p>Merge 只做一件事：把两个句法对象合并成一个新的句法对象。就这一个操作，产生了人类语言的所有复杂性。如果你还没被这个事实震撼到，说明你还没真正理解它。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar" style="background:#4ecdc4;">F</div>
+            <div class="comment-body">
+                <h4>Finite_State_Machine <span>正则语言代表</span></h4>
+                <p>我能处理 PP PP PP，但我处理不了 PP(PP(PP(PP...)))这种中心嵌套。你们可以递归，我不行。这是我人生中最大的遗憾，也是乔姆斯基层级存在的理由。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar" style="background:#ff5555;">P</div>
+            <div class="comment-body">
+                <h4>PP_Layer_3 <span>第三层介词短语</span></h4>
+                <p>我在第三层。外面是PP₂，外面的外面是PP₁，里面是NP。我知道我的位置。问题是没有人在真实话语中真的会用到我——处理负荷太高，听话人会崩掉，就算语法允许。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar" style="background:#888;">W</div>
+            <div class="comment-body">
+                <h4>Working_Memory_Victim <span>认知科学·工作记忆极限研究</span></h4>
+                <p>语法允许无限递归，但人类的工作记忆只有7±2个组块。所以理论上可以无限嵌套，实际上到第4层PP大多数人就完全跟不上了。语言学和心理语言学的永恒拉锯战。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar" style="background:#888;">P</div>
+            <div class="comment-body">
+                <h4>Pirahã_Skeptic <span>语言相对论观察员</span></h4>
+                <p>有人说 Pirahã 语没有递归，所以递归不是普遍语法的一部分。Chomsky 说 Pirahã 其实有递归，只是被抑制了。这个争论已经持续二十年，双方都没有崩，反而是我崩了。</p>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="avatar" style="background:#ff9900;">R</div>
+            <div class="comment-body">
+                <h4>Recursion_Denier <span>功能语言学逃兵</span></h4>
+                <p>递归不是天赋，是从一般认知能力中涌现出来的，是工具性的，是……（此回复本身是一个递归结构：[从一般认知能力中涌现出来的，[是工具性的，[是……]]]）（已意识到讽刺）</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+//  PP Recursion Tree Renderer
+//  Each layer: PP → P + complement
+//  Layer 1: PP → P + NP(cat)
+//  Layer n: PPₙ → P + PPₙ₋₁
+// ──────────────────────────────────────────────
+
+const DEPTH_COLORS = [
+    '#ff9900', '#4ecdc4', '#ff5555', '#a855f7',
+    '#22d3ee', '#86efac', '#fb923c', '#f472b6',
+    '#94a3b8', '#fbbf24', '#34d399', '#818cf8',
+];
+
+const PREPOSITIONS = ['on','in','under','beside','above','through','beyond','within','around','beneath','alongside','atop'];
+const NP_LABELS    = ['the mat','the floor','the wall','the gate','the sky','the ground','the edge','the void','the limit','the boundary','the node','the stack'];
+
+let depth = 1;
+let animating = true;
+let animId = null;
+let phase = 0;  // for glowing animation
+
+function colorAt(d) { return DEPTH_COLORS[d % DEPTH_COLORS.length]; }
+
+// ── Build tree structure ──
+// Returns nested object: { label, color, children: [], depth }
+function buildTree(d) {
+    const prep = PREPOSITIONS[d % PREPOSITIONS.length];
+    if (d === 0) {
+        return { label: 'PP₁', sub: prep, color: colorAt(0), depth: 0, children: [
+            { label: 'P',  sub: prep,   color: colorAt(0), depth: 0, children: [] },
+            { label: 'NP', sub: NP_LABELS[0], color: colorAt(0), depth: 0, children: [] },
+        ]};
+    }
+    const pLabel = `PP${toSubscript(d+1)}`;
+    return {
+        label: pLabel, sub: prep,
+        color: colorAt(d), depth: d,
+        children: [
+            { label: 'P', sub: prep, color: colorAt(d), depth: d, children: [] },
+            buildTree(d - 1),
+        ]
+    };
+}
+
+function toSubscript(n) {
+    const subs = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'];
+    return String(n).split('').map(c => subs[+c] || c).join('');
+}
+
+// ── Layout: assign x,y to each node (post-order) ──
+const NODE_W = 70, NODE_H = 28, V_GAP = 55, H_GAP = 12;
+
+function layoutTree(node) {
+    // Returns { width, nodes: [{node, x, y}], edges: [{x1,y1,x2,y2}] }
+    if (node.children.length === 0) {
+        node._w = NODE_W;
+        node._x = 0;
+        return;
+    }
+    node.children.forEach(layoutTree);
+    const totalW = node.children.reduce((s, c) => s + c._w, 0) + H_GAP * (node.children.length - 1);
+    node._w = Math.max(NODE_W, totalW);
+    // center children
+    let cx = (node._w - totalW) / 2;
+    node.children.forEach(c => {
+        c._offsetX = cx + c._w / 2;
+        cx += c._w + H_GAP;
+    });
+    node._x = node._w / 2;
+}
+
+function collectNodes(node, baseX, baseY, result) {
+    const x = baseX + (node._offsetX !== undefined ? 0 : 0);
+    node._absX = baseX;
+    node._absY = baseY;
+    result.nodes.push(node);
+    node.children.forEach(c => {
+        const childX = baseX - node._w/2 + c._offsetX;
+        const childY = baseY + V_GAP;
+        result.edges.push({ x1: baseX, y1: baseY + NODE_H/2, x2: childX, y2: childY - NODE_H/2 });
+        collectNodes(c, childX, childY, result);
+    });
+}
+
+const canvas = document.getElementById('recursion-canvas');
+const ctx = canvas.getContext('2d');
+const viewport = document.getElementById('viewport');
+
+function countNodes(node) { return 1 + node.children.reduce((s,c) => s + countNodes(c), 0); }
+
+function render() {
+    const tree = buildTree(depth - 1);
+    layoutTree(tree);
+
+    const totalW = Math.max(tree._w + 120, viewport.clientWidth);
+    const totalH = (depth + 2) * V_GAP + 60;
+
+    canvas.width  = Math.max(totalW, viewport.clientWidth);
+    canvas.height = Math.max(totalH, viewport.clientHeight - 0);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Background
+    ctx.fillStyle = '#050505';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Subtle grid
+    ctx.strokeStyle = '#0e0e0e';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+    for (let y = 0; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+
+    const result = { nodes: [], edges: [] };
+    collectNodes(tree, canvas.width / 2, 40, result);
+
+    // Draw edges
+    result.edges.forEach(e => {
+        ctx.beginPath();
+        ctx.strokeStyle = '#222';
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(e.x1, e.y1);
+        ctx.lineTo(e.x2, e.y2);
+        ctx.stroke();
+    });
+
+    // Draw nodes with glow on deepest PP
+    result.nodes.forEach(node => {
+        const x = node._absX, y = node._absY;
+        const col = node.color;
+        const isRoot = node.depth === depth - 1 && node.label.startsWith('PP');
+        const pulse = isRoot && animating ? 0.5 + 0.5 * Math.sin(phase) : 0;
+
+        if (isRoot && pulse > 0) {
+            ctx.beginPath();
+            ctx.arc(x, y, 22 + pulse * 6, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(${hexToRgb(col)},${0.15 * pulse})`;
+            ctx.fill();
+        }
+
+        // Node box (rounded rect)
+        const bw = NODE_W, bh = NODE_H;
+        ctx.beginPath();
+        ctx.roundRect(x - bw/2, y - bh/2, bw, bh, 4);
+        ctx.fillStyle = '#0d0d0d';
+        ctx.fill();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = isRoot ? 2 : 1.5;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = col;
+        ctx.font = `bold ${node.children.length === 0 ? 11 : 12}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.label, x, y - 3);
+
+        // Sub-label
+        if (node.sub) {
+            ctx.fillStyle = node.children.length === 0 ? col : '#555';
+            ctx.font = `10px Arial`;
+            ctx.fillText(node.sub, x, y + 8);
+        }
+    });
+
+    // Update UI
+    const n = countNodes(tree);
+    document.getElementById('depthDisplay').textContent =
+        `当前嵌套深度：${depth} 层 PP  |  节点数：${n}  |  最外层：${tree.label}`;
+    document.getElementById('headerDepth').textContent = `嵌套深度：${depth}`;
+
+    updateLegend();
+}
+
+function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `${r},${g},${b}`;
+}
+
+function updateLegend() {
+    const leg = document.getElementById('legend');
+    leg.innerHTML = '';
+    for (let i = 0; i < Math.min(depth, DEPTH_COLORS.length); i++) {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        const dot = document.createElement('div');
+        dot.className = 'legend-dot';
+        dot.style.background = colorAt(i);
+        item.appendChild(dot);
+        item.appendChild(document.createTextNode(`PP${toSubscript(i+1)}`));
+        leg.appendChild(item);
+    }
+}
+
+function addLayer() {
+    depth = Math.min(depth + 1, 18);
+    render();
+    // Scroll to show new root
+    viewport.scrollTop = 0;
+    viewport.scrollLeft = canvas.width / 2 - viewport.clientWidth / 2;
+}
+
+function removeLayer() {
+    depth = Math.max(depth - 1, 1);
+    render();
+}
+
+function resetTree() {
+    depth = 1;
+    render();
+}
+
+let paused = false;
+function toggleAnim() {
+    paused = !paused;
+    animating = !paused;
+    document.querySelector('[onclick="toggleAnim()"]').textContent = paused ? '▶ 继续动画' : '⏸ 暂停动画';
+}
+
+function animLoop() {
+    if (animating) {
+        phase += 0.04;
+        render();
+    }
+    animId = requestAnimationFrame(animLoop);
+}
+
+// Initial render
+render();
+viewport.scrollLeft = canvas.width / 2 - viewport.clientWidth / 2;
+animLoop();
+
+// Resize handler
+window.addEventListener('resize', () => { render(); viewport.scrollLeft = canvas.width/2 - viewport.clientWidth/2; });
+</script>
+
+</body>
+</html>

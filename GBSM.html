@@ -66,19 +66,19 @@
 
         .status-overlay {
             position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            padding: 8px 20px;
-            border: 1px solid #ff9900;
-            font-size: 15px;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.75);
+            padding: 5px 12px;
+            border-left: 3px solid #ff9900;
+            font-size: 13px;
             color: #ff9900;
-            text-align: center;
+            text-align: left;
             opacity: 0;
             transition: opacity 0.5s;
             z-index: 10;
             white-space: nowrap;
+            max-width: 55%;
         }
         .status-overlay.visible { opacity: 1; }
 
@@ -490,9 +490,9 @@ function draw(p) {
         ctx.globalAlpha = Math.min(1, bf * 3);
         ctx.fillStyle = '#4ecdc4';
         ctx.font = 'bold 12px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('✓ NP-trace A-bound by NPᵢ in Spec,IP', w/2, h * 0.87);
-        if (bf > 0.4) ctx.fillText('✓ ECP: tᵢ properly governed by V', w/2, h * 0.93);
+        ctx.textAlign = 'left';
+        ctx.fillText('✓ NP-trace A-bound by NPᵢ in Spec,IP', w * 0.03, h * 0.88);
+        if (bf > 0.4) ctx.fillText('✓ ECP: tᵢ properly governed by V', w * 0.03, h * 0.94);
         ctx.globalAlpha = 1;
 
         if (bf < 0.4) statusEl.textContent = '⚡ 链检验：tᵢ 须被 NPᵢ 在 Spec,IP A-bind…';
@@ -516,11 +516,11 @@ function draw(p) {
         ctx.globalAlpha = Math.min(1, cf * 2);
         ctx.fillStyle = '#4ecdc4';
         ctx.font = 'bold 13px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('✓ 管辖满足  ·  ✓ 约束满足  ·  ✓ ECP满足', w/2, h * 0.88);
+        ctx.textAlign = 'left';
+        ctx.fillText('✓ 管辖满足  ·  ✓ 约束满足  ·  ✓ ECP满足', w * 0.03, h * 0.88);
         ctx.fillStyle = '#ff9900';
         ctx.font = 'bold 15px Arial';
-        ctx.fillText("DOESN'T CRASH · WELL-FORMED ✓", w/2, h * 0.94);
+        ctx.fillText("DOESN'T CRASH · WELL-FORMED ✓", w * 0.03, h * 0.94);
         ctx.globalAlpha = 1;
 
         climax.classList.add('visible');
