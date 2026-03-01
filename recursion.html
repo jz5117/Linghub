@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -30,9 +31,7 @@
         }
         .recursion-viewport:active { cursor: grabbing; }
 
-        #recursion-canvas {
-            display: block;
-        }
+        #recursion-canvas { display: block; }
 
         .controls-bar {
             background: #1b1b1b;
@@ -150,18 +149,25 @@
     <div class="description">
         <h3>📋 内容简介</h3>
         <p>
-            点击 <strong>「再加一层 PP」</strong> 见证 Merge 的无限威力。每次操作，一个新的 PP（介词短语）将整个已有结构作为其补语，产生新的节点。这个过程在原则上没有上限——这正是人类语言区别于所有动物通讯系统的核心特征。
+            点击 <strong>「再加一层 PP」</strong> 见证 Merge 的无限威力。每次操作，我们不让介词直接“接一个 PP”（那在普通英语里不成立），而是让介词始终接一个 <strong>NP</strong>；递归发生在 <strong>NP 内部不断附加 PP 修饰语</strong>：
+            <br>也就是：<code>P 选 NP</code>，<code>NP 里再长出 PP</code>。
         </p>
+
+        <!-- ✅ FIXED: English-appropriate recursion: PP -> P + NP; NP -> N + PP -->
         <div class="inline-tree">
-            <span class="node">PP₁</span> → P + NP<br>
-            <span class="node">PP₂</span> → P + <span class="node">PP₁</span><br>
-            <span class="node">PP₃</span> → P + <span class="node">PP₂</span> → P + [P + <span class="node">PP₁</span>]<br>
+            <span class="node">PP</span> → P + <span class="node">NP</span><br>
+            <span class="node">NP</span> → N + <span class="node">PP</span> <span class="trace">(可重复附加)</span><br>
+            <span class="trace">—— 递归展开（示意）——</span><br>
+            <span class="node">NP₀</span> → N<br>
+            <span class="node">NP₁</span> → N + <span class="node">PP₁</span><br>
+            <span class="node">NP₂</span> → N + <span class="node">PP₁</span> + <span class="node">PP₂</span><br>
             <span class="trace">...</span><br>
-            <span class="node">PPₙ</span> → P + <span class="node">PPₙ₋₁</span> &nbsp;（n → ∞，派生不崩）
+            <span class="node">NPₙ</span> → N + <span class="node">PP₁</span> + … + <span class="node">PPₙ</span> &nbsp;（n → ∞，语法允许，工作记忆另说）
         </div>
+
         <p>
-            经典例子：<code>the cat [on the mat [in the room [on the floor [of the building [...]]]]]</code><br>
-            每一层 PP 都是合法的句法对象，可以继续被嵌套。有限的词汇，无限的结构——这就是 <strong>递归（Recursion）</strong>。
+            经典例子：<code>the cat [on [NP the mat [in [NP the room [on [NP the floor [of [NP the building …]]]]]]]]</code><br>
+            重点是：<strong>每个 P 都在接 NP</strong>；而 <strong>NP 里面可以继续带 PP 修饰</strong>，于是结构就能不断长下去。
         </p>
         <p style="color:#ff9900; font-style:italic;">
             "The language faculty allows the generation of an infinite array of expressions from a finite set of elements." —— Chomsky (1995), <em>The Minimalist Program</em>
@@ -225,10 +231,17 @@
 
 <script>
 // ──────────────────────────────────────────────
-//  PP Recursion Tree Renderer
-//  Each layer: PP → P + complement
-//  Layer 1: PP → P + NP(cat)
-//  Layer n: PPₙ → P + PPₙ₋₁
+//  NP/PP Recursion Tree Renderer (English-appropriate)
+//
+//  We enforce: P takes NP, not PP.
+//    PP → P + NP
+//    NP → N + PP  (recursive PP modifiers inside NP)
+//
+//  Visualization choice here:
+//  - Root is PPₙ (each click adds an OUTER PP layer)
+//  - Each PP's complement is NP
+//  - That NP contains N + (next-inner PP) …
+//  This matches: on [NP mat [PP in [NP room [PP on [NP floor ...]]]]]
 // ──────────────────────────────────────────────
 
 const DEPTH_COLORS = [
@@ -238,46 +251,73 @@ const DEPTH_COLORS = [
 ];
 
 const PREPOSITIONS = ['on','in','under','beside','above','through','beyond','within','around','beneath','alongside','atop'];
-const NP_LABELS    = ['the mat','the floor','the wall','the gate','the sky','the ground','the edge','the void','the limit','the boundary','the node','the stack'];
+const N_HEADS      = ['mat','room','floor','building','gate','edge','boundary','limit','stack','node','void','sky'];
+const DETERMINERS  = ['the','the','the','the','the','a','the','the'];
 
-let depth = 1;
+let depth = 1;          // number of PP layers
 let animating = true;
 let animId = null;
-let phase = 0;  // for glowing animation
+let phase = 0;          // for glowing animation
 
 function colorAt(d) { return DEPTH_COLORS[d % DEPTH_COLORS.length]; }
-
-// ── Build tree structure ──
-// Returns nested object: { label, color, children: [], depth }
-function buildTree(d) {
-    const prep = PREPOSITIONS[d % PREPOSITIONS.length];
-    if (d === 0) {
-        return { label: 'PP₁', sub: prep, color: colorAt(0), depth: 0, children: [
-            { label: 'P',  sub: prep,   color: colorAt(0), depth: 0, children: [] },
-            { label: 'NP', sub: NP_LABELS[0], color: colorAt(0), depth: 0, children: [] },
-        ]};
-    }
-    const pLabel = `PP${toSubscript(d+1)}`;
-    return {
-        label: pLabel, sub: prep,
-        color: colorAt(d), depth: d,
-        children: [
-            { label: 'P', sub: prep, color: colorAt(d), depth: d, children: [] },
-            buildTree(d - 1),
-        ]
-    };
-}
 
 function toSubscript(n) {
     const subs = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'];
     return String(n).split('').map(c => subs[+c] || c).join('');
 }
 
-// ── Layout: assign x,y to each node (post-order) ──
-const NODE_W = 70, NODE_H = 28, V_GAP = 55, H_GAP = 12;
+function pickPrep(i) { return PREPOSITIONS[i % PREPOSITIONS.length]; }
+function pickN(i) { return N_HEADS[i % N_HEADS.length]; }
+function pickDet(i) { return DETERMINERS[i % DETERMINERS.length]; }
+
+// ── Build structure: PP_k -> P + NP_k; NP_k -> N + PP_(k-1) (if k>1)
+// Base: PP_1 -> P + NP_1; NP_1 -> (Det + N)  (no inner PP)
+function buildTree(k) {
+    const prep = pickPrep(k-1);
+    const col  = colorAt(k-1);
+
+    // Build NP_k (complement of PP_k)
+    const np = buildNP(k);
+
+    return {
+        label: `PP${toSubscript(k)}`,
+        sub: prep,
+        color: col,
+        depth: k-1,
+        children: [
+            { label: 'P',  sub: prep, color: col, depth: k-1, children: [] },
+            np
+        ]
+    };
+}
+
+function buildNP(k) {
+    const col = colorAt(k-1);
+    const det = pickDet(k-1);
+    const n   = pickN(k-1);
+
+    const baseNP = {
+        label: `NP${toSubscript(k)}`,
+        sub: `${det} ${n}`,
+        color: col,
+        depth: k-1,
+        children: [
+            { label: 'Det', sub: det, color: col, depth: k-1, children: [] },
+            { label: 'N',   sub: n,   color: col, depth: k-1, children: [] },
+        ]
+    };
+
+    if (k <= 1) return baseNP;
+
+    // Add inner PP_{k-1} as a modifier to this NP
+    baseNP.children.push(buildTree(k-1));
+    return baseNP;
+}
+
+// ── Layout ──
+const NODE_W = 78, NODE_H = 28, V_GAP = 58, H_GAP = 14;
 
 function layoutTree(node) {
-    // Returns { width, nodes: [{node, x, y}], edges: [{x1,y1,x2,y2}] }
     if (node.children.length === 0) {
         node._w = NODE_W;
         node._x = 0;
@@ -286,7 +326,6 @@ function layoutTree(node) {
     node.children.forEach(layoutTree);
     const totalW = node.children.reduce((s, c) => s + c._w, 0) + H_GAP * (node.children.length - 1);
     node._w = Math.max(NODE_W, totalW);
-    // center children
     let cx = (node._w - totalW) / 2;
     node.children.forEach(c => {
         c._offsetX = cx + c._w / 2;
@@ -296,7 +335,6 @@ function layoutTree(node) {
 }
 
 function collectNodes(node, baseX, baseY, result) {
-    const x = baseX + (node._offsetX !== undefined ? 0 : 0);
     node._absX = baseX;
     node._absY = baseY;
     result.nodes.push(node);
@@ -313,89 +351,6 @@ const ctx = canvas.getContext('2d');
 const viewport = document.getElementById('viewport');
 
 function countNodes(node) { return 1 + node.children.reduce((s,c) => s + countNodes(c), 0); }
-
-function render() {
-    const tree = buildTree(depth - 1);
-    layoutTree(tree);
-
-    const totalW = Math.max(tree._w + 120, viewport.clientWidth);
-    const totalH = (depth + 2) * V_GAP + 60;
-
-    canvas.width  = Math.max(totalW, viewport.clientWidth);
-    canvas.height = Math.max(totalH, viewport.clientHeight - 0);
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Background
-    ctx.fillStyle = '#050505';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Subtle grid
-    ctx.strokeStyle = '#0e0e0e';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < canvas.width; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
-    for (let y = 0; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
-
-    const result = { nodes: [], edges: [] };
-    collectNodes(tree, canvas.width / 2, 40, result);
-
-    // Draw edges
-    result.edges.forEach(e => {
-        ctx.beginPath();
-        ctx.strokeStyle = '#222';
-        ctx.lineWidth = 1.5;
-        ctx.moveTo(e.x1, e.y1);
-        ctx.lineTo(e.x2, e.y2);
-        ctx.stroke();
-    });
-
-    // Draw nodes with glow on deepest PP
-    result.nodes.forEach(node => {
-        const x = node._absX, y = node._absY;
-        const col = node.color;
-        const isRoot = node.depth === depth - 1 && node.label.startsWith('PP');
-        const pulse = isRoot && animating ? 0.5 + 0.5 * Math.sin(phase) : 0;
-
-        if (isRoot && pulse > 0) {
-            ctx.beginPath();
-            ctx.arc(x, y, 22 + pulse * 6, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(${hexToRgb(col)},${0.15 * pulse})`;
-            ctx.fill();
-        }
-
-        // Node box (rounded rect)
-        const bw = NODE_W, bh = NODE_H;
-        ctx.beginPath();
-        ctx.roundRect(x - bw/2, y - bh/2, bw, bh, 4);
-        ctx.fillStyle = '#0d0d0d';
-        ctx.fill();
-        ctx.strokeStyle = col;
-        ctx.lineWidth = isRoot ? 2 : 1.5;
-        ctx.stroke();
-
-        // Label
-        ctx.fillStyle = col;
-        ctx.font = `bold ${node.children.length === 0 ? 11 : 12}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(node.label, x, y - 3);
-
-        // Sub-label
-        if (node.sub) {
-            ctx.fillStyle = node.children.length === 0 ? col : '#555';
-            ctx.font = `10px Arial`;
-            ctx.fillText(node.sub, x, y + 8);
-        }
-    });
-
-    // Update UI
-    const n = countNodes(tree);
-    document.getElementById('depthDisplay').textContent =
-        `当前嵌套深度：${depth} 层 PP  |  节点数：${n}  |  最外层：${tree.label}`;
-    document.getElementById('headerDepth').textContent = `嵌套深度：${depth}`;
-
-    updateLegend();
-}
 
 function hexToRgb(hex) {
     const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
@@ -417,23 +372,94 @@ function updateLegend() {
     }
 }
 
+function render() {
+    const tree = buildTree(depth);
+    layoutTree(tree);
+
+    const totalW = Math.max(tree._w + 140, viewport.clientWidth);
+    const totalH = (depth * 3 + 3) * (V_GAP * 0.65) + 260; // NP adds extra levels; give more room
+
+    canvas.width  = Math.max(totalW, viewport.clientWidth);
+    canvas.height = Math.max(totalH, viewport.clientHeight);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Background
+    ctx.fillStyle = '#050505';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Subtle grid
+    ctx.strokeStyle = '#0e0e0e';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+    for (let y = 0; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+
+    const result = { nodes: [], edges: [] };
+    collectNodes(tree, canvas.width / 2, 40, result);
+
+    // Edges
+    result.edges.forEach(e => {
+        ctx.beginPath();
+        ctx.strokeStyle = '#222';
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(e.x1, e.y1);
+        ctx.lineTo(e.x2, e.y2);
+        ctx.stroke();
+    });
+
+    // Nodes
+    result.nodes.forEach(node => {
+        const x = node._absX, y = node._absY;
+        const col = node.color;
+
+        const isRoot = node.label === `PP${toSubscript(depth)}`;
+        const pulse = isRoot && animating ? 0.5 + 0.5 * Math.sin(phase) : 0;
+
+        if (isRoot && pulse > 0) {
+            ctx.beginPath();
+            ctx.arc(x, y, 22 + pulse * 6, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(${hexToRgb(col)},${0.15 * pulse})`;
+            ctx.fill();
+        }
+
+        const bw = NODE_W, bh = NODE_H;
+        ctx.beginPath();
+        ctx.roundRect(x - bw/2, y - bh/2, bw, bh, 4);
+        ctx.fillStyle = '#0d0d0d';
+        ctx.fill();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = isRoot ? 2 : 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = col;
+        ctx.font = `bold ${node.children.length === 0 ? 11 : 12}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.label, x, y - 3);
+
+        if (node.sub) {
+            ctx.fillStyle = node.children.length === 0 ? col : '#555';
+            ctx.font = `10px Arial`;
+            ctx.fillText(node.sub, x, y + 8);
+        }
+    });
+
+    const n = countNodes(tree);
+    document.getElementById('depthDisplay').textContent =
+        `当前嵌套深度：${depth} 层 PP  |  节点数：${n}  |  最外层：${tree.label}  |  (P 选 NP，递归在 NP 内)`;
+    document.getElementById('headerDepth').textContent = `嵌套深度：${depth}`;
+
+    updateLegend();
+}
+
 function addLayer() {
-    depth = Math.min(depth + 1, 18);
+    depth = Math.min(depth + 1, 12); // NP 结构更大，别太夸张
     render();
-    // Scroll to show new root
     viewport.scrollTop = 0;
     viewport.scrollLeft = canvas.width / 2 - viewport.clientWidth / 2;
 }
-
-function removeLayer() {
-    depth = Math.max(depth - 1, 1);
-    render();
-}
-
-function resetTree() {
-    depth = 1;
-    render();
-}
+function removeLayer() { depth = Math.max(depth - 1, 1); render(); }
+function resetTree() { depth = 1; render(); }
 
 let paused = false;
 function toggleAnim() {
@@ -443,21 +469,21 @@ function toggleAnim() {
 }
 
 function animLoop() {
-    if (animating) {
-        phase += 0.04;
-        render();
-    }
+    if (animating) { phase += 0.04; render(); }
     animId = requestAnimationFrame(animLoop);
 }
 
-// Initial render
+// Initial
 render();
 viewport.scrollLeft = canvas.width / 2 - viewport.clientWidth / 2;
 animLoop();
 
-// Resize handler
-window.addEventListener('resize', () => { render(); viewport.scrollLeft = canvas.width/2 - viewport.clientWidth/2; });
+window.addEventListener('resize', () => {
+    render();
+    viewport.scrollLeft = canvas.width / 2 - viewport.clientWidth / 2;
+});
 </script>
 
 </body>
 </html>
+```
