@@ -72,6 +72,15 @@
     .emoji-big { font-size: 54px; line-height: 1; opacity: 0.95; }
     .emoji-small { font-size: 18px; line-height: 1.2; color: #bbb; opacity: 0.9; }
 
+    /* Image thumbnails */
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: contrast(1.05) brightness(0.95);
+    }
+
     /* 响应式：窄屏 2 列 / 手机 1 列 */
     @media (max-width: 1100px) {
       .video-grid { grid-template-columns: repeat(2, 1fr); }
@@ -203,13 +212,10 @@
       </div>
     </a>
 
-    <!-- 5 -->
+    <!-- 5 (封面改为 chomsky.jpg，位于 main 下；如果文件就在 index.html 同级，直接用 chomsky.jpg) -->
     <a href="404.html" class="video-card">
       <div class="thumbnail">
-        <div class="emoji-thumb">
-          <div class="emoji-big">🥺📚</div>
-          <div class="emoji-small">FLAMEWAR</div>
-        </div>
+        <img src="chomsky.jpg" alt="Chomsky" class="thumb-img">
         <span class="duration">CxG:18+</span>
       </div>
       <div class="video-info">
