@@ -1,319 +1,342 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LingHub - Mental Grammar正在支配你</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #000; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
-        a { text-decoration: none; color: inherit; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LingHub - Mental Grammar正在支配你</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #000; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 14px; }
+    a { text-decoration: none; color: inherit; }
 
-        header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; }
-        .logo-container { font-size: 28px; font-weight: bold; letter-spacing: -1px; cursor: pointer; margin-right: 30px; }
-        .logo-text { color: #fff; }
-        .logo-box { background-color: #ff9900; color: #000; padding: 2px 8px; border-radius: 4px; margin-left: 2px; }
+    header { background-color: #1b1b1b; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; }
+    .logo-container { font-size: 28px; font-weight: bold; letter-spacing: -1px; cursor: pointer; margin-right: 30px; }
+    .logo-text { color: #fff; }
+    .logo-box { background-color: #ff9900; color: #000; padding: 2px 8px; border-radius: 4px; margin-left: 2px; }
 
-        .search-bar { flex-grow: 1; display: flex; max-width: 600px; margin: 0 20px; }
-        .search-input { width: 100%; padding: 10px; background-color: #000; border: 1px solid #333; color: #999; font-size: 16px; }
-        .search-btn { background-color: #ff9900; border: none; padding: 0 20px; color: #000; font-weight: bold; cursor: pointer; }
+    .search-bar { flex-grow: 1; display: flex; max-width: 600px; margin: 0 20px; }
+    .search-input { width: 100%; padding: 10px; background-color: #000; border: 1px solid #333; color: #999; font-size: 16px; }
+    .search-btn { background-color: #ff9900; border: none; padding: 0 20px; color: #000; font-weight: bold; cursor: pointer; }
 
-        .nav-links { display: flex; gap: 20px; font-size: 16px; align-items: center; }
-        .nav-item { color: #fff; }
-        .nav-item:hover { color: #ff9900; }
-        .premium-btn { padding: 5px 10px; border-radius: 3px; font-weight: bold; background-color: #ff9900; color: #000; text-transform: uppercase; font-size: 12px; }
+    .nav-links { display: flex; gap: 20px; font-size: 16px; align-items: center; }
+    .nav-item { color: #fff; }
+    .nav-item:hover { color: #ff9900; }
+    .premium-btn { padding: 5px 10px; border-radius: 3px; font-weight: bold; background-color: #ff9900; color: #000; text-transform: uppercase; font-size: 12px; }
 
-        .sub-nav { background-color: #131313; padding: 10px 20px; display: flex; gap: 20px; border-bottom: 1px solid #333; overflow-x: auto; }
-        .sub-nav a { color: #ccc; white-space: nowrap; }
-        .sub-nav a:hover { color: #ff9900; }
+    .sub-nav { background-color: #131313; padding: 10px 20px; display: flex; gap: 20px; border-bottom: 1px solid #333; overflow-x: auto; }
+    .sub-nav a { color: #ccc; white-space: nowrap; }
+    .sub-nav a:hover { color: #ff9900; }
 
-        .container { width: 95%; margin: 20px auto; }
-        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
-        .section-title { font-size: 24px; font-weight: normal; }
+    .container { width: 95%; margin: 20px auto; }
+    .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+    .section-title { font-size: 24px; font-weight: normal; }
 
-        .video-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    /* 关键：电脑版 3 列 */
+    .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 
-        .video-card { cursor: pointer; transition: transform 0.2s; display: block; }
-        .video-card:hover { transform: translateY(-3px); }
-        .video-card:hover .title { color: #ff9900; }
+    .video-card { cursor: pointer; transition: transform 0.2s; display: block; }
+    .video-card:hover { transform: translateY(-3px); }
+    .video-card:hover .title { color: #ff9900; }
 
-        .thumbnail { position: relative; width: 100%; aspect-ratio: 16/9; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #666; font-weight: bold; overflow: hidden; border: 1px solid #333; }
-        .thumbnail-content { font-size: 28px; opacity: 0.5; text-align: center; padding: 10px; line-height: 1.3; }
-        .duration { position: absolute; bottom: 5px; right: 5px; background-color: rgba(0,0,0,0.8); color: #fff; padding: 1px 4px; font-size: 12px; border: 1px solid #666; }
-        .hd-badge { position: absolute; top: 5px; left: 5px; background-color: #ff9900; color: #000; padding: 0 4px; font-size: 10px; font-weight: bold; border-radius: 2px; }
+    .thumbnail { position: relative; width: 100%; aspect-ratio: 16/9; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; color: #666; font-weight: bold; overflow: hidden; border: 1px solid #333; }
+    .duration { position: absolute; bottom: 6px; right: 6px; background-color: rgba(0,0,0,0.8); color: #fff; padding: 1px 6px; font-size: 12px; border: 1px solid #666; }
+    .hd-badge { position: absolute; top: 6px; left: 6px; background-color: #ff9900; color: #000; padding: 0 6px; font-size: 10px; font-weight: bold; border-radius: 2px; }
 
-        .video-info { padding-top: 8px; }
-        .title { font-size: 15px; font-weight: bold; margin-bottom: 5px; line-height: 1.3; color: #fff; }
-        .metadata { color: #777; font-size: 12px; display: flex; justify-content: space-between; }
-        .author { color: #777; font-size: 11px; margin-top: 3px; display: block; }
+    .video-info { padding-top: 8px; }
+    .title { font-size: 15px; font-weight: bold; margin-bottom: 5px; line-height: 1.3; color: #fff; }
+    .metadata { color: #777; font-size: 12px; display: flex; justify-content: space-between; }
+    .author { color: #777; font-size: 11px; margin-top: 3px; display: block; }
 
-        .ad-banner { width: 100%; background-color: #1a0000; margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 18px; border: 1px solid #660000; color: #ff9900; font-size: 16px; font-weight: bold; text-align: center; padding: 14px 20px; flex-wrap: wrap; }
-        .countdown-box { display: inline-flex; align-items: center; gap: 6px; background: #000; border: 1px solid #ff0000; padding: 6px 14px; border-radius: 3px; font-size: 20px; color: #fff; white-space: nowrap; }
-        .countdown-box .timer-num { color: #ff2222; font-weight: bold; min-width: 24px; display: inline-block; text-align: center; }
-        @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0.2} }
-        .blink { animation: blink 0.7s infinite; }
+    .ad-banner { width: 100%; background-color: #1a0000; margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 18px; border: 1px solid #660000; color: #ff9900; font-size: 16px; font-weight: bold; text-align: center; padding: 14px 20px; flex-wrap: wrap; }
+    .countdown-box { display: inline-flex; align-items: center; gap: 6px; background: #000; border: 1px solid #ff0000; padding: 6px 14px; border-radius: 3px; font-size: 20px; color: #fff; white-space: nowrap; }
+    .countdown-box .timer-num { color: #ff2222; font-weight: bold; min-width: 24px; display: inline-block; text-align: center; }
+    @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0.2} }
+    .blink { animation: blink 0.7s infinite; }
 
-        footer { margin-top: 50px; padding: 40px 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 12px; }
-        .footer-links a { margin: 0 10px; }
-        .footer-links a:hover { color: #fff; }
+    footer { margin-top: 50px; padding: 40px 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 12px; }
+    .footer-links a { margin: 0 10px; }
+    .footer-links a:hover { color: #fff; }
 
-        /* Emoji thumbnails */
-        .emoji-thumb {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-align: center;
-            padding: 14px;
-        }
-        .emoji-big { font-size: 54px; line-height: 1; opacity: 0.95; }
-        .emoji-small { font-size: 18px; line-height: 1.2; color: #bbb; opacity: 0.9; }
+    /* Emoji thumbnails */
+    .emoji-thumb {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      padding: 14px;
+    }
+    .emoji-big { font-size: 54px; line-height: 1; opacity: 0.95; }
+    .emoji-small { font-size: 18px; line-height: 1.2; color: #bbb; opacity: 0.9; }
 
-        @media (max-width: 900px) {
-            .video-grid { grid-template-columns: repeat(2, 1fr); }
-            .search-bar { display: none; }
-        }
-    </style>
+    /* 响应式：窄屏 2 列 / 手机 1 列 */
+    @media (max-width: 1100px) {
+      .video-grid { grid-template-columns: repeat(2, 1fr); }
+      .search-bar { display: none; }
+    }
+    @media (max-width: 620px) {
+      .video-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="logo-container">
-        <span class="logo-text">Ling</span><span class="logo-box">Hub</span>
-    </a>
+  <a href="index.html" class="logo-container">
+    <span class="logo-text">Ling</span><span class="logo-box">Hub</span>
+  </a>
 
-    <div class="search-bar">
-        <input type="text" class="search-input" placeholder="搜：binding / x-bar / features / 你的底层形式…">
-        <button class="search-btn">搜索</button>
-    </div>
+  <div class="search-bar">
+    <input type="text" class="search-input" placeholder="搜：binding / x-bar / features / 你的底层形式…">
+    <button class="search-btn">搜索</button>
+  </div>
 
-    <div class="nav-links">
-        <a href="404.html" class="nav-item">登录</a>
-        <a href="404.html" class="nav-item">注册</a>
-        <a href="404.html" class="premium-btn">升级到 Reviewer 2</a>
-    </div>
+  <div class="nav-links">
+    <a href="404.html" class="nav-item">登录</a>
+    <a href="404.html" class="nav-item">注册</a>
+    <a href="404.html" class="premium-btn">升级到 Reviewer 2</a>
+  </div>
 </header>
 
 <nav class="sub-nav">
-    <a href="index.html" style="color: #ff9900; border-bottom: 2px solid #ff9900;">首页</a>
-    <a href="404.html">管辖与约束</a>
-    <a href="404.html">X-bar(21+)🍸</a>
-    <a href="404.html">移位禁区</a>
-    <a href="404.html">Feature Fetish</a>
-    <a href="404.html">NP专场</a>
-    <a href="404.html">词根插入</a>
-    <a href="404.html">口腔体操课</a>
+  <a href="index.html" style="color: #ff9900; border-bottom: 2px solid #ff9900;">首页</a>
+  <a href="404.html">管辖与约束</a>
+  <a href="404.html">X-bar(21+)🍸</a>
+  <a href="404.html">移位禁区</a>
+  <a href="404.html">Feature Fetish</a>
+  <a href="404.html">NP专场</a>
+  <a href="404.html">词根插入</a>
+  <a href="404.html">口腔体操课</a>
 </nav>
 
 <main class="container">
 
-    <div class="ad-banner">
-        <span>🚨 你附近的单身【UR】正在等待被推倒！你已错过 3 个最小对立，继续无视将永久中和！</span>
-        <div class="countdown-box">⏰ <span class="timer-num blink" id="adTimer">59</span>s</div>
-    </div>
+  <div class="ad-banner">
+    <span>🚨 你附近的单身【UR】正在等待被推倒！你已错过 3 个最小对立，继续无视将永久中和！</span>
+    <div class="countdown-box">⏰ <span class="timer-num blink" id="adTimer">59</span>s</div>
+  </div>
 
-    <div class="section-header">
-        <h2 class="section-title">🔥 最热语法行为</h2>
-    </div>
+  <div class="section-header">
+    <h2 class="section-title">🔥 最热语法行为</h2>
+  </div>
 
-    <div class="video-grid">
+  <div class="video-grid">
 
-        <!-- 卡片1：GBSM（封面改emoji） -->
-        <a href="invisible-daddy.html" class="video-card">
-            <div class="thumbnail">
-                <span class="hd-badge">GBSM</span>
-                <div class="emoji-thumb">
-                    <div class="emoji-big">⛓️🧬</div>
-                    <div class="emoji-small">CHAIN / c-COMMAND</div>
-                </div>
-                <span class="duration">GOV:GB</span>
-            </div>
-            <div class="video-info">
-                <div class="title">他一拉紧链条，我就流了满地（GBSM）</div>
-                <span class="author">Invisible_Structure_Official ✓</span>
-                <div class="metadata">
-                    <span>∞ 次可派生</span>
-                    <span>Well-Formed ✓</span>
-                </div>
-            </div>
-        </a>
+    <!-- 1 -->
+    <a href="invisible-daddy.html" class="video-card">
+      <div class="thumbnail">
+        <span class="hd-badge">GBSM</span>
+        <div class="emoji-thumb">
+          <div class="emoji-big">⛓️🧬</div>
+          <div class="emoji-small">CHAIN / c-COMMAND</div>
+        </div>
+        <span class="duration">GOV:GB</span>
+      </div>
+      <div class="video-info">
+        <div class="title">他一拉紧链条，我就流了满地（GBSM）</div>
+        <span class="author">Invisible_Structure_Official ✓</span>
+        <div class="metadata">
+          <span>∞ 次可派生</span>
+          <span>Well-Formed ✓</span>
+        </div>
+      </div>
+    </a>
 
-        <!-- 卡片2：IPA口腔体操（封面改emoji） -->
-        <a href="marginal-pleasure.html" class="video-card">
-            <div class="thumbnail">
-                <span class="hd-badge">IPA</span>
-                <div class="emoji-thumb">
-                    <div class="emoji-big">👄🔊</div>
-                    <div class="emoji-small">IPA DRILL</div>
-                </div>
-                <span class="duration">/aɪ.piː.eɪ/</span>
-            </div>
-            <div class="video-info">
-                <div class="title">张开就不许停：口腔体操强制训练</div>
-                <span class="author">IPA_Drillmaster ✓</span>
-                <div class="metadata">
-                    <span>3200万次开口</span>
-                    <span>15个元音</span>
-                </div>
-            </div>
-        </a>
+    <!-- 2 -->
+    <a href="marginal-pleasure.html" class="video-card">
+      <div class="thumbnail">
+        <span class="hd-badge">IPA</span>
+        <div class="emoji-thumb">
+          <div class="emoji-big">👄🔊</div>
+          <div class="emoji-small">IPA DRILL</div>
+        </div>
+        <span class="duration">/aɪ.piː.eɪ/</span>
+      </div>
+      <div class="video-info">
+        <div class="title">张开就不许停：口腔体操强制训练</div>
+        <span class="author">IPA_Drillmaster ✓</span>
+        <div class="metadata">
+          <span>3200万次开口</span>
+          <span>15个元音</span>
+        </div>
+      </div>
+    </a>
 
-        <!-- 卡片3：你先别急，我把你分段给你看（封面emoji） -->
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <div class="emoji-thumb">
-                    <div class="emoji-big">✂️🧩</div>
-                    <div class="emoji-small">SEGMENTATION</div>
-                </div>
-                <span class="duration">FREE</span>
-            </div>
-            <div class="video-info">
-                <div class="title">你先别急，我把你分段给你看</div>
-                <span class="author">Prosody_Slicer</span>
-                <div class="metadata">
-                    <span>∞ 次切分</span>
-                    <span>边界可疑</span>
-                </div>
-            </div>
-        </a>
+    <!-- 3 -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <div class="emoji-thumb">
+          <div class="emoji-big">✂️🧩</div>
+          <div class="emoji-small">SEGMENTATION</div>
+        </div>
+        <span class="duration">FREE</span>
+      </div>
+      <div class="video-info">
+        <div class="title">你先别急，我把你分段给你看</div>
+        <span class="author">Prosody_Slicer</span>
+        <div class="metadata">
+          <span>∞ 次切分</span>
+          <span>边界可疑</span>
+        </div>
+      </div>
+    </a>
 
-        <!-- 卡片4：婴儿服 + pʰ/p/b（封面emoji） -->
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <div class="emoji-thumb">
-                    <div class="emoji-big">🍼👶</div>
-                    <div class="emoji-small">pʰ vs p vs b</div>
-                </div>
-                <span class="duration">ABX</span>
-            </div>
-            <div class="video-info">
-                <div class="title">他给我穿上婴儿服，问我p^h,p和b的区别</div>
-                <span class="author">VOT_Babytalk</span>
-                <div class="metadata">
-                    <span>3选1</span>
-                    <span>别装听懂</span>
-                </div>
-            </div>
-        </a>
+    <!-- 4 -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <div class="emoji-thumb">
+          <div class="emoji-big">🍼👶</div>
+          <div class="emoji-small">pʰ vs p vs b</div>
+        </div>
+        <span class="duration">ABX</span>
+      </div>
+      <div class="video-info">
+        <div class="title">他给我穿上婴儿服，问我p^h,p和b的区别</div>
+        <span class="author">VOT_Babytalk</span>
+        <div class="metadata">
+          <span>3选1</span>
+          <span>别装听懂</span>
+        </div>
+      </div>
+    </a>
 
-        <!-- 卡片5：构式派（封面emoji） -->
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <div class="emoji-thumb">
-                    <div class="emoji-big">🥺📚</div>
-                    <div class="emoji-small">FLAMEWAR</div>
-                </div>
-                <span class="duration">UG:18+</span>
-            </div>
-            <div class="video-info">
-                <div class="title">构式派跪着求饶：乔爷爷的大层级能不能别硬塞进我的构式库存</div>
-                <span class="author">Constructicon_Cope</span>
-                <div class="metadata">
-                    <span>∞ 次互喷</span>
-                    <span>Merge vs Inventory</span>
-                </div>
-            </div>
-        </a>
+    <!-- 5 -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <div class="emoji-thumb">
+          <div class="emoji-big">🥺📚</div>
+          <div class="emoji-small">FLAMEWAR</div>
+        </div>
+        <span class="duration">UG:18+</span>
+      </div>
+      <div class="video-info">
+        <div class="title">构式派跪着求饶：乔爷爷的大层级能不能别硬塞进我的构式库存</div>
+        <span class="author">Constructicon_Cope</span>
+        <div class="metadata">
+          <span>∞ 次互喷</span>
+          <span>Merge vs Inventory</span>
+        </div>
+      </div>
+    </a>
 
-        <!-- 卡片6：语料悲剧（封面emoji） -->
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <div class="emoji-thumb">
-                    <div class="emoji-big">🏷️🕳️</div>
-                    <div class="emoji-small">ANNOTATION HELL</div>
-                </div>
-                <span class="duration">SAD:END</span>
-            </div>
-            <div class="video-info">
-                <div class="title">语料悲剧：被所有人标注之后就再也找不到了</div>
-                <span class="author">Annotation_Hell</span>
-                <div class="metadata">
-                    <span>666万条噪声</span>
-                    <span>索引失踪</span>
-                </div>
-            </div>
-        </a>
+    <!-- 6 -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <div class="emoji-thumb">
+          <div class="emoji-big">🏷️🕳️</div>
+          <div class="emoji-small">ANNOTATION HELL</div>
+        </div>
+        <span class="duration">SAD:END</span>
+      </div>
+      <div class="video-info">
+        <div class="title">语料悲剧：被所有人标注之后就再也找不到了</div>
+        <span class="author">Annotation_Hell</span>
+        <div class="metadata">
+          <span>666万条噪声</span>
+          <span>索引失踪</span>
+        </div>
+      </div>
+    </a>
 
-    </div>
+  </div>
 
-    <!-- Premium区：只保留两个 -->
-    <div class="section-header" style="margin-top: 40px;">
-        <h2 class="section-title">💎 Premium专区</h2>
-    </div>
+  <div class="section-header" style="margin-top: 40px;">
+    <h2 class="section-title">💎 Premium专区</h2>
+  </div>
 
-    <div class="video-grid">
+  <div class="video-grid">
 
-        <!-- Premium 1：OT -->
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <span class="hd-badge">PREMIUM</span>
-                <div class="emoji-thumb">
-                    <div class="emoji-big">⛓️🏆</div>
-                    <div class="emoji-small">OT / CONSTRAINTS</div>
-                </div>
-                <span class="duration">OT</span>
-            </div>
-            <div class="video-info">
-                <div class="title">一堆 Constraint 轮流把我压到最优解</div>
-                <span class="author">Ranking_Domination ✓</span>
-                <div class="metadata">
-                    <span>Tableau 私房</span>
-                    <span>Winner Only</span>
-                </div>
-            </div>
-        </a>
+    <!-- Premium 1 -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <span class="hd-badge">PREMIUM</span>
+        <div class="emoji-thumb">
+          <div class="emoji-big">⛓️🏆</div>
+          <div class="emoji-small">OT / CONSTRAINTS</div>
+        </div>
+        <span class="duration">OT</span>
+      </div>
+      <div class="video-info">
+        <div class="title">一堆 Constraint 轮流把我压到最优解</div>
+        <span class="author">Ranking_Domination ✓</span>
+        <div class="metadata">
+          <span>Tableau 私房</span>
+          <span>Winner Only</span>
+        </div>
+      </div>
+    </a>
 
-        <!-- Premium 2：递归结构 / 多P -->
-        <a href="404.html" class="video-card">
-            <div class="thumbnail">
-                <span class="hd-badge">PREMIUM</span>
-                <div class="emoji-thumb">
-                    <div class="emoji-big">🌀📐</div>
-                    <div class="emoji-small">RECURSION</div>
-                </div>
-                <span class="duration">∞</span>
-            </div>
-            <div class="video-info">
-                <div class="title">多P的极限是……</div>
-                <span class="author">Recursion_Dealer ✓</span>
-                <div class="metadata">
-                    <span>继续=加深</span>
-                    <span>别喊停</span>
-                </div>
-            </div>
-        </a>
+    <!-- Premium 2 -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <span class="hd-badge">PREMIUM</span>
+        <div class="emoji-thumb">
+          <div class="emoji-big">🌀📐</div>
+          <div class="emoji-small">RECURSION</div>
+        </div>
+        <span class="duration">∞</span>
+      </div>
+      <div class="video-info">
+        <div class="title">多P的极限是……</div>
+        <span class="author">Recursion_Dealer ✓</span>
+        <div class="metadata">
+          <span>继续=加深</span>
+          <span>别喊停</span>
+        </div>
+      </div>
+    </a>
 
-    </div>
+    <!-- Premium 3（新增） -->
+    <a href="404.html" class="video-card">
+      <div class="thumbnail">
+        <span class="hd-badge">PREMIUM</span>
+        <div class="emoji-thumb">
+          <div class="emoji-big">🧾💥</div>
+          <div class="emoji-small">EXCEPTIONS</div>
+        </div>
+        <span class="duration">OVERFLOW</span>
+      </div>
+      <div class="video-info">
+        <div class="title">当例外数量超过了规则数量</div>
+        <span class="author">Rulebook_Broken ✓</span>
+        <div class="metadata">
+          <span>记不完了</span>
+          <span>改成 list</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
 
 </main>
 
 <footer>
-    <div class="footer-links">
-        <a href="404.html">关于我们</a> |
-        <a href="404.html">加入语料库</a> |
-        <a href="404.html">举报反例</a> |
-        <a href="404.html">投诉 Reviewer 2</a> |
-        <a href="404.html">约束政策</a>
-    </div>
-    <br>
-    <p>© 1888-2026 LingHub. 国际音标协会（可能）认证。</p>
-    <p>所有参与者默认具备母语直觉。本站仅供学术恶搞，如有不适请立刻补充更多数据。</p>
-    <p style="margin-top: 10px; color: #444;">祝大家生活性福</p>
+  <div class="footer-links">
+    <a href="404.html">关于我们</a> |
+    <a href="404.html">加入语料库</a> |
+    <a href="404.html">举报反例</a> |
+    <a href="404.html">投诉 Reviewer 2</a> |
+    <a href="404.html">约束政策</a>
+  </div>
+  <br>
+  <p>© 1888-2026 LingHub. 国际音标协会（可能）认证。</p>
+  <p>所有参与者默认具备母语直觉。本站仅供学术恶搞，如有不适请立刻补充更多数据。</p>
+  <p style="margin-top: 10px; color: #444;">祝大家生活性福</p>
 </footer>
 
 <script>
 (function() {
-    var t = 59;
-    var el = document.getElementById('adTimer');
-    if (!el) return;
-    setInterval(function() {
-        t--;
-        if (t < 0) t = 59;
-        el.textContent = t < 10 ? '0' + t : t;
-    }, 1000);
+  var t = 59;
+  var el = document.getElementById('adTimer');
+  if (!el) return;
+  setInterval(function() {
+    t--;
+    if (t < 0) t = 59;
+    el.textContent = t < 10 ? '0' + t : t;
+  }, 1000);
 })();
 </script>
 </body>
