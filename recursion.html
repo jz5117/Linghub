@@ -147,32 +147,43 @@
     </div>
 
     <div class="description">
-        <h3>📋 内容简介</h3>
-        <p>
-            点击 <strong>「再加一层 PP」</strong> 见证 Merge 的无限威力。每次操作，我们不让介词直接“接一个 PP”（那在普通英语里不成立），而是让介词始终接一个 <strong>NP</strong>；递归发生在 <strong>NP 内部不断附加 PP 修饰语</strong>：
-            <br>也就是：<code>P 选 NP</code>，<code>NP 里再长出 PP</code>。
-        </p>
+  <h3>📋 内容简介</h3>
 
-        <!-- ✅ FIXED: English-appropriate recursion: PP -> P + NP; NP -> N + PP -->
-        <div class="inline-tree">
-            <span class="node">PP</span> → P + <span class="node">NP</span><br>
-            <span class="node">NP</span> → N + <span class="node">PP</span> <span class="trace">(可重复附加)</span><br>
-            <span class="trace">—— 递归展开（示意）——</span><br>
-            <span class="node">NP₀</span> → N<br>
-            <span class="node">NP₁</span> → N + <span class="node">PP₁</span><br>
-            <span class="node">NP₂</span> → N + <span class="node">PP₁</span> + <span class="node">PP₂</span><br>
-            <span class="trace">...</span><br>
-            <span class="node">NPₙ</span> → N + <span class="node">PP₁</span> + … + <span class="node">PPₙ</span> &nbsp;（n → ∞，语法允许，工作记忆另说）
-        </div>
+  <p>
+    点击 <strong>「再加一层 PP」</strong> 看一个很“英语友好”的无限扩展：<strong>每一层 PP 都是 <code>P + NP</code></strong>，
+    也就是介词照常选择名词短语作补语（<code>P selects NP</code>）。<br>
+    我们刻意不把它写成“介词直接接一个 PP”，因为在英语里 <strong>最常规的情形是 P 接 NP</strong>；
+    而像 <em>from under</em> 这类结构通常会被当作<strong>复合/序列介词</strong>来分析，不是你现在要演示的那一类。
+  </p>
 
-        <p>
-            经典例子：<code>the cat [on [NP the mat [in [NP the room [on [NP the floor [of [NP the building …]]]]]]]]</code><br>
-            重点是：<strong>每个 P 都在接 NP</strong>；而 <strong>NP 里面可以继续带 PP 修饰</strong>，于是结构就能不断长下去。
-        </p>
-        <p style="color:#ff9900; font-style:italic;">
-            "The language faculty allows the generation of an infinite array of expressions from a finite set of elements." —— Chomsky (1995), <em>The Minimalist Program</em>
-        </p>
-    </div>
+  <p>
+    真正的无界性来自这里：<strong>NP 里可以不断长出新的 PP 修饰语</strong>。
+    于是每次你加一层，其实是在把旧结构塞进一个更大的 NP 里，再被外层介词“包”起来。
+  </p>
+
+  <div class="inline-tree">
+    <span class="node">PP</span> → P + <span class="node">NP</span><br>
+    <span class="node">NP</span> → (Det) N' <br>
+    <span class="node">N'</span> → <span class="node">N'</span> + <span class="node">PP</span> &nbsp;|&nbsp; N <span class="trace">(PP 作为修饰语递归附加)</span><br>
+    <span class="trace">—— 嵌套读法（示意）——</span><br>
+    <span class="node">PP₁</span> → P₁ + [NP the N₁]<br>
+    <span class="node">PP₂</span> → P₂ + [NP the N₂ <span class="node">PP₁</span>]<br>
+    <span class="node">PP₃</span> → P₃ + [NP the N₃ <span class="node">PP₂</span>]<br>
+    <span class="trace">...</span><br>
+    <span class="node">PPₙ</span> → Pₙ + [NP the Nₙ <span class="node">PPₙ₋₁</span>] &nbsp;（n → ∞，语法允许，工作记忆另说）
+  </div>
+
+  <p>
+    经典例子（只看括号层级）：<br>
+    <code>the cat [PP on [NP the mat [PP in [NP the room [PP on [NP the floor [PP of [NP the building …]]]]]]]]</code><br>
+    重点：<strong>每个 P 都在接 NP</strong>；而 <strong>NP 内部又能继续带 PP 修饰</strong>，所以层级结构可以无界扩展。
+  </p>
+
+  <p style="color:#ff9900; font-style:italic;">
+    "The language faculty allows the generation of an infinite array of expressions from a finite set of elements."
+    —— Chomsky (1995), <em>The Minimalist Program</em>
+  </p>
+</div>
 
     <div class="comment-section">
         <h3 style="margin-bottom:20px;">评论 (∞)</h3>
